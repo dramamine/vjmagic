@@ -71,11 +71,8 @@ class QuadrantAnimator:
 
   def tick(self):
     if not self.stack:
-      print "initializing stack"
       self.palette_iterator = self.palette_iterator + 1 if self.palette_iterator + 1 < len(self.palette) else 0
       self.stack = list(self.quadrant)
-      print self.stack
-      print self.quadrant
       shuffle(self.stack)
 
     chips = self.stack.pop()
@@ -117,6 +114,9 @@ else:
 # color_to_quadrant(oranges[0], quadrant_ur)
 
 ll = QuadrantAnimator(blues, quadrant_ll)
+lr = QuadrantAnimator(blues, quadrant_lr)
+ul = QuadrantAnimator(blues, quadrant_ul)
+ur = QuadrantAnimator(oranges, quadrant_ur)
 
 
 # note_on = [0x90, 60, 112] # channel 1, middle C, velocity 112
@@ -126,6 +126,9 @@ ll = QuadrantAnimator(blues, quadrant_ll)
 while(True):
   time.sleep(0.1)
   ll.tick()
+  lr.tick()
+  ul.tick()
+  ur.tick()
 
 everything_off()
 # midiout.send_message(note_off)
