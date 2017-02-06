@@ -1,0 +1,73 @@
+var midi = require('midi');
+
+
+// Set up a new output.
+var output = new midi.output();
+
+var layerMap = [124, 125, 126, 127];
+var layerAdds = [0, 16, 31, 48];
+var layer = -1;
+var layerToKill = -1;
+
+var iterator = 0;
+
+function randomNote() {
+
+
+
+  console.log('playing a note');
+  var note = 36 + Math.floor( Math.random() * 16 );
+  // var note = 36 + 16 + iterator;
+  iterator = iterator + 1;
+  layer = Math.floor( Math.random() * 4 );
+  // var newLayer = 0;
+
+  // if (layer !== newLayer) {
+  //   // turn off layer 0. 2/E5
+  //   console.log('contemplating killing layer: ', layer);
+  //   output.sendMessage([145, layerMap[layer], 90]);
+  //   layerToKill = layer;
+  //   setTimeout(function() {
+  //     console.log('finally killing layer:', layer);
+  //     output.sendMessage([145, layerMap[layerToKill], 90]);
+  //   })
+  //   layer = newLayer;
+  // }
+
+  // const layer =
+  // 144: channel 1
+  // 90: note on?? velocity??
+  console.log('playing note' + (note + layerAdds[layer]) + ' on layer ' + layer);
+  output.sendMessage([144, note + layerAdds[layer], 90]);
+
+  // kill layers above
+  for (var l = layer + 1; l < layerMap.length; l++) {
+    console.log('killing layer:', l);
+    output.sendMessage([145, layerMap[l], 90]);
+  }
+  // output.sendMessage([145, 88 + 36, 90]);
+
+}
+
+
+// Count the available output ports.
+var ports = output.getPortCount();
+var port = 0;
+for(var i = 0; i < ports; i++) {
+  if (output.getPortName(i).indexOf("from node") >= 0) {
+    console.log('found my port', output.getPortName(i));
+    port = i;
+    break;
+  }
+}
+
+// Open the first available output port.
+output.openPort(port);
+
+randomNote();
+setInterval(randomNote, 30000);
+
+
+console.log('goodbye');
+// Close the port when done.
+// output.closePort();
