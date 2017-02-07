@@ -3,12 +3,29 @@ import rtmidi
 import itertools
 from random import shuffle
 from abletonpush import AbletonPush
+from pusheventlistener import PushEventListener
 # from apscheduler.schedulers.background import BackgroundScheduler
 # scheduler = BackgroundScheduler()
-device_id = "Ableton Push:Ableton Push MIDI 2 24:1"
-
+ableton_out = "Ableton Push:Ableton Push MIDI 2 24:1"
 midiout = rtmidi.MidiOut()
-midiin = rtmidi.MidiIn()
+
+
+midiinputs = [rtmidi.MidiIn()]
+
+pel = PushEventListener()
+for idx, device in enumerate(midiinputs[0].get_ports()):
+  print "considering device ", device
+  if "ableton push" in device.lower():
+    print "opening input port:", device
+    midiinputs[0].open_port(idx)
+    midiinputs[0].set_callback(pel.router)
+
+    midiinputs = [rtmidi.MidiIn()] + midiinputs
+    # pel.load_midiin(midiin)
+    #midiin = rtmidi.MidiIn()
+    # break
+
+
 
 note_tracker = dict()
 notes_toggled_by_user = dict()
@@ -97,7 +114,7 @@ def handle_midi_input(event, data=None):
 
 
 available_ports = midiout.get_ports()
-push = available_ports.index(device_id)
+push = available_ports.index(ableton_out)
 
 if push >= 0:
     midiout.open_port(push)
@@ -107,7 +124,7 @@ else:
     midiout.open_virtual_port("My virtual output")
     midiin.open_virtual_port("My virtual input")
 
-ap = AbletonPush(midiout, midiin)
+ap = AbletonPush(midiout)
 print "yep got an AP object"
 
 
@@ -122,12 +139,15 @@ ul = QuadrantAnimator(blues, quadrant_ul)
 ur = QuadrantAnimator(oranges, quadrant_ur)
 
 def words():
-  print "typing..."
+  # ap.set_user_mode()
+
   # this clears out a line
   ap.clearDisplay()
   print ap.get_bytes("HELLO WORLD")
 
   ap.set_display_line(1, "HELLO WORLD")
+
+
   # midiout.send_message([240, 71, 127, 21, 24, 0, 69, 0,
   #   33,33,33,33,3,3,3,3,
   #   3,3,3,3,3,3,3,3,
