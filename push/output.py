@@ -7,10 +7,12 @@ SYSEX_TERM = [247]
 class AbletonPush:
   # midiin = None
   midiout = None
-  def __init__(self, Output, Input=None):
+  midithru = None
+  def __init__(self, Output, Thru):
     # assume these are open
     # self.midiin = Input
     self.midiout = Output
+    self.midithru = Thru
 
   def clearDisplayLine(self, line):
     idx = 28 + line
@@ -18,8 +20,13 @@ class AbletonPush:
     self.midiout.send_message(msg)
 
   def set_display_line(self, line, str):
-    msg = SYSEX_START + [(24 + line), 0, 69, 0] + self.get_bytes(str) + SYSEX_TERM
-    # print "my msg:", msg
+    self.set_display_bytes(line, self.get_bytes(str))
+
+  def set_display_bytes(self, line, bytes):
+    # pad to 68
+    while len(bytes) < 68:
+      bytes.append(30)
+    msg = SYSEX_START + [(24 + line), 0, 69, 0] + bytes + SYSEX_TERM
     self.midiout.send_message(msg)
 
   def clearDisplay(self):
@@ -36,8 +43,7 @@ class AbletonPush:
     bytes = []
     for c in str:
       bytes.append(int(c.encode('hex'), 16))
-    # print "chars?", len(bytes)
-    # pad to 68
-    while len(bytes) < 68:
-      bytes.append(30)
     return bytes
+
+  def thru(self, event):
+      self.midithru.send_message(event)

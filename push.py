@@ -13,6 +13,12 @@ midiout = rtmidi.MidiOut()
 
 midiinputs = [rtmidi.MidiIn()]
 
+def find_port_index(midi, str):
+    for idx, device in enumerate(midi.get_ports()):
+        if str in device.lower():
+            return idx
+    return -1
+
 # open any pushy inputs
 pel = PushEventListener()
 for idx, device in enumerate(midiinputs[0].get_ports()):
@@ -27,19 +33,51 @@ for idx, device in enumerate(midiinputs[0].get_ports()):
     #midiin = rtmidi.MidiIn()
     # break
 
-for idx, device in enumerate(midiout.get_ports()):
-  print "considering device ", device
-  if "midiout2" in device.lower():
-    print "opening output port:", device
-    midiout.open_port(idx)
-    break
+resolume_in_name = "resolume out"
+resin = rtmidi.MidiIn()
+portid = find_port_index(resin, resolume_in_name)
+if portid >= 0:
+    resin.open_port(portid)
+else:
+    print "didnt find ", resin, "how will I get updates from resolume?"
 
-ap = AbletonPush(midiout)
+res_listener = PushEventListener()
+resin.set_callback(res_listener.router)
+
+ableton_push_out_name = "midiout2"
+portid = find_port_index(midiout, ableton_push_out_name)
+if portid >= 0:
+    midiout.open_port(portid)
+else:
+    print "didnt find ", ableton_push_out_name, "how will I send stuff to Push?"
+    exit(1)
+
+# for idx, device in enumerate(midiout.get_ports()):
+#   print "considering device ", device
+#   if "midiout2" in device.lower():
+#     print "opening output port:", device
+#     midiout.open_port(idx)
+#     break
+
+# note: rtmidi doesn't seem super happy about making virtual ports on Windows.
+# use loopMidi to define your virtual port ahead of time.
+vport = "python out"
+midithru = rtmidi.MidiOut()
+portid = find_port_index(midithru, vport)
+if portid >= 0:
+    midithru.open_port(portid)
+else:
+    midithru.open_virtual_port(vport)
+
+
+
+ap = AbletonPush(midiout, midithru)
 pel.load_output(ap)
 
 # get those encoders happenin'
 encoders = Encoders()
 encoders.register_listeners(pel)
+encoders.register_resolume_listener(res_listener)
 encoders.load_output(ap)
 
 note_tracker = dict()
@@ -157,31 +195,10 @@ def words():
   # ap.set_user_mode()
 
   # this clears out a line
-  ap.clearDisplay()
-  print ap.get_bytes("HELLO WORLD")
+  # ap.clearDisplay()
 
-  ap.set_display_line(1, "HELLO WORLD")
-
-
-  # midiout.send_message([240, 71, 127, 21, 24, 0, 69, 0,
-  #   33,33,33,33,3,3,3,3,
-  #   3,3,3,3,3,3,3,3,
-  #   3,3,3,3,3,3,3,3,
-  #   3,3,3,3,3,3,3,3,
-  #   3,3,3,3,3,3,3,3,
-  #   3,3,3,3,3,3,3,3,
-  #   3,3,3,3,3,3,3,3,
-  #   3,3,3,3,3,3,3,3,
-  #   3,3,3,3,
-  #   247
-  # ])
-  # midiout.send_message([240, 71, 127, 21, 30, 0, 0, 247])
-
-
-
-# note_on = [0x90, 60, 112] # channel 1, middle C, velocity 112
-# note_off = [0x80, 60, 0]
-# midiout.send_message(note_on)
+  ap.set_display_bytes(2, map(lambda x: int(x), range(68)))
+  ap.set_display_bytes(3, map(lambda x: int(x), range(69,127)))
 
 words()
 
