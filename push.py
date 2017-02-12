@@ -2,8 +2,9 @@ import time
 import rtmidi
 import itertools
 from random import shuffle
-from abletonpush import AbletonPush
-from pusheventlistener import PushEventListener
+from push.output import AbletonPush
+from push.listener import PushEventListener
+from push.encoders import Encoders
 # from apscheduler.schedulers.background import BackgroundScheduler
 # scheduler = BackgroundScheduler()
 ableton_out = "Ableton Push:Ableton Push MIDI 2 24:1"
@@ -12,6 +13,7 @@ midiout = rtmidi.MidiOut()
 
 midiinputs = [rtmidi.MidiIn()]
 
+# open any pushy inputs
 pel = PushEventListener()
 for idx, device in enumerate(midiinputs[0].get_ports()):
   print "considering device ", device
@@ -25,7 +27,20 @@ for idx, device in enumerate(midiinputs[0].get_ports()):
     #midiin = rtmidi.MidiIn()
     # break
 
+for idx, device in enumerate(midiout.get_ports()):
+  print "considering device ", device
+  if "midiout2" in device.lower():
+    print "opening output port:", device
+    midiout.open_port(idx)
+    break
 
+ap = AbletonPush(midiout)
+pel.load_output(ap)
+
+# get those encoders happenin'
+encoders = Encoders()
+encoders.register_listeners(pel)
+encoders.load_output(ap)
 
 note_tracker = dict()
 notes_toggled_by_user = dict()
@@ -113,19 +128,19 @@ def handle_midi_input(event, data=None):
   print note
 
 
-available_ports = midiout.get_ports()
-push = available_ports.index(ableton_out)
-
-if push >= 0:
-    midiout.open_port(push)
-    # midiin.open_port(push)
-    # midiin.set_callback(handle_midi_input)
-else:
-    midiout.open_virtual_port("My virtual output")
-    midiin.open_virtual_port("My virtual input")
-
-ap = AbletonPush(midiout)
-print "yep got an AP object"
+# available_ports = midiout.get_ports()
+# push = available_ports.index(ableton_out)
+#
+# if push >= 0:
+#     midiout.open_port(push)
+#     # midiin.open_port(push)
+#     # midiin.set_callback(handle_midi_input)
+# else:
+#     midiout.open_virtual_port("My virtual output")
+#     midiin.open_virtual_port("My virtual input")
+#
+# ap = AbletonPush(midiout)
+# print "yep got an AP object"
 
 
 # color_to_quadrant(blues[0], quadrant_ll)
