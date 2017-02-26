@@ -29,8 +29,18 @@ class Quadrant:
       Quadrant.apply_color(self.push, self.palette[self.palette_iterator], [chips])
 
   def toggle(self, thing):
-    Quadrant.apply_color(self.push, self.selected, [thing])
+    # turn currently active one off.
+    if (self.exception > 0):
+      Quadrant.apply_color(self.push, self.palette[0], [self.exception])
+
+    # save for furure reference
     self.exception = thing
+
+    Quadrant.apply_color(self.push, self.selected, [thing])
+
+  def check_note(self, note):
+    if note in self.quadrant:
+      self.toggle(note)
 
   @staticmethod
   def apply_color(push, color, list):

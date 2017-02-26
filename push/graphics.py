@@ -50,4 +50,4 @@ class Graphics:
     map(lambda q: q.tick(), self.quadrants)
 
   def handle_note_in(self, event):
-    print "got a note in message"
+    map(lambda q: q.check_note(event[1]), self.quadrants)
