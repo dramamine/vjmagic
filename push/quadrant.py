@@ -7,10 +7,11 @@ class Quadrant:
   palette_iterator = 0
   stack = []
 
-  def __init__(self, push, palette, selected, coord_a, coord_b):
+  def __init__(self, push, palette, toggler, selected, coord_a, coord_b):
     self.palette = palette
     self.push = push
     self.selected = selected
+    self.toggler = toggler
 
     # list of all notes in this quadrant
     self.quadrant = self.coords_to_quadrant(coord_a, coord_b)
@@ -36,7 +37,17 @@ class Quadrant:
     # save for furure reference
     self.exception = thing
 
+    # make sure our toggler button is on.
+    self.push.light_user_button(self.toggler)
+
+    # actually color the damn thing
     Quadrant.apply_color(self.push, self.selected, [thing])
+
+  def unselect(self, event):
+    print "unselect was called."
+    Quadrant.apply_color(self.push, self.palette[0], [self.exception])
+    self.push.unlight_user_button(self.toggler)
+    self.exception = -1
 
   def check_note(self, note):
     if note in self.quadrant:

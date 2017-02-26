@@ -13,8 +13,8 @@ class Graphics:
     self.listener = listener
     self.push = push
 
-    listener.add_listener([constants.MIDI_NOTE_ON, None, None],
-      self.handle_note_in, False)
+
+
 
     self.note_tracker = dict()
     self.notes_toggled_by_user = dict()
@@ -27,11 +27,22 @@ class Graphics:
     selected = constants.COLOR_GREEN
 
     self.quadrants = [
-      Quadrant(push, dark_blues, selected, (0,0), (3,3)),
-      Quadrant(push, blues, selected, (4,0), (7,3)),
-      Quadrant(push, blues, selected, (0,4), (3,7)),
-      Quadrant(push, oranges, selected, (4,4), (7,7)),
+      Quadrant(push, dark_blues, constants.BUTTON_QUANTIZE, selected,  (0,0), (3,3)),
+      Quadrant(push, blues, constants.BUTTON_DOUBLE, selected, (4,0), (7,3)),
+      Quadrant(push, blues, constants.BUTTON_DELETE, selected, (0,4), (3,7)),
+      Quadrant(push, oranges, constants.BUTTON_UNDO, selected, (4,4), (7,7)),
     ]
+
+    listener.add_listener([constants.MIDI_NOTE_ON, None, None],
+      self.handle_note_in, False)
+    listener.add_listener([constants.PRESS_USER_BUTTON, constants.BUTTON_QUANTIZE, None],
+      self.quadrants[0].unselect, False)
+    listener.add_listener([constants.PRESS_USER_BUTTON, constants.BUTTON_DOUBLE, None],
+      self.quadrants[1].unselect, False)
+    listener.add_listener([constants.PRESS_USER_BUTTON, constants.BUTTON_DELETE, None],
+      self.quadrants[2].unselect, False)
+    listener.add_listener([constants.PRESS_USER_BUTTON, constants.BUTTON_UNDO, None],
+      self.quadrants[3].unselect, False)
 
     # start in a fun pattern. each quadrant is 4 cells ahead of the last.
     for i in range(0,4):

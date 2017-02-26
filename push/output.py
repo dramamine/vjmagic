@@ -4,6 +4,8 @@
 SYSEX_START = [240, 71, 127, 21]
 SYSEX_TERM = [247]
 
+import constants
+
 class AbletonPush:
   # midiin = None
   midiout = None
@@ -51,3 +53,9 @@ class AbletonPush:
   def note_sender(self, note):
     # note_tracker[note[1]] = 1
     self.midiout.send_message(note)
+
+  def light_user_button(self, button):
+    self.midiout.send_message([constants.PRESS_USER_BUTTON, button, 127])
+
+  def unlight_user_button(self, button):
+    self.midiout.send_message([constants.PRESS_USER_BUTTON, button, 0])
