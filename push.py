@@ -1,17 +1,18 @@
 import rtmidi
 import itertools
+import time
+import sys, os
 
 from push.output import AbletonPush
 from push.listener import PushEventListener
 from push.encoders import Encoders
 from push.graphics import Graphics
-# from push.quadrantanimator import QuadrantAnimator
-# from apscheduler.schedulers.background import BackgroundScheduler
-# scheduler = BackgroundScheduler()
-ableton_out = "Ableton Push:Ableton Push MIDI 2 24:1"
+
+# always flush stdout
+# http://stackoverflow.com/questions/230751/how-to-flush-output-of-python-print
+sys.stdout = os.fdopen(sys.stdout.fileno(), 'w', 0)
+
 midiout = rtmidi.MidiOut()
-
-
 midiinputs = [rtmidi.MidiIn()]
 
 def find_port_index(midi, str):
@@ -84,33 +85,6 @@ encoders.load_output(ap)
 graphics = Graphics(pel, ap)
 graphics.loop()
 
-
-# def note_sender(note):
-#   note_tracker[note[1]] = 1
-#   midiout.send_message(note)
-
-# def everything_off():
-#   for note in note_tracker.keys():
-#     midiout.send_message([0x80, note, 0])
-
-# def apply_color(color, list):
-#   for note in list:
-#     note_sender([0x90, note, color])
-
-
-
-# def animate_quadrant(palette, quadrant):
-
-def handle_midi_input(event, data=None):
-  print event
-  message, note, vel = event[0]
-  if message == 0x90:
-    print "yep this is a note on message"
-  print note
-
-
-
-
 def words():
   # ap.set_user_mode()
 
@@ -122,8 +96,7 @@ def words():
 
 words()
 
-
 # everything_off()
 # midiout.send_message(note_off)
 
-del midiout
+# del midiout
