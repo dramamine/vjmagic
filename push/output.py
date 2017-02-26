@@ -47,3 +47,7 @@ class AbletonPush:
 
   def thru(self, event):
       self.midithru.send_message(event)
+
+  def note_sender(self, note):
+    # note_tracker[note[1]] = 1
+    self.midiout.send_message(note)

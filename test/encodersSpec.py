@@ -1,5 +1,5 @@
 # run from midi directory
-# python -m unittest discover "*Spec.py"
+# python testrunner.py
 
 import unittest
-from ../push.encoders import Encoders
+from push.encoders import Encoders

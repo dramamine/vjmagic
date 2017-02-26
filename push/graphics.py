@@ -1,24 +1,39 @@
-import itertools;
+
+import time
+from quadrant import Quadrant
+import constants
 
 class Graphics:
-  def __init__(self):
+  def __init__(self, listener, push):
+    # TODO
+    self.listener = listener
+    self.push = push
+
+    listener.add_listener([constants.MIDI_NOTE_ON, None, None],
+      self.handle_note_in, False)
+
+    self.note_tracker = dict()
+    self.notes_toggled_by_user = dict()
+
+
+    # palette
+    blues = [41, 45]
+    oranges = [60, 61]
+    selected = constants.COLOR_GREEN
+
+    self.quadrants = [
+      Quadrant(push, blues, selected, (0,0), (3,3)),
+      Quadrant(push, blues, selected, (4,0), (7,3)),
+      Quadrant(push, blues, selected, (0,4), (3,7)),
+      Quadrant(push, oranges, selected, (4,4), (7,7)),
+    ]
     return
 
-  # (0,0), (3,3) gives you the lower left quadrant
-  # (0,0), (7,7) gives you the whole thing
-  # 0,0 is midi 36
-  # 7,7 is midi 99
-  def coords_to_quadrant(self, coord_a, coord_b):
-    (xa, ya) = coord_a
-    (xb, yb) = coord_b
+  def loop(self):
+    while(True):
+      time.sleep(0.1)
+      for quadrant in self.quadrants:
+        quadrant.tick()
 
-    width = xb - xa + 1
-
-    ranges = list()
-    for y_iterator in range(ya, yb + 1):
-      point = 36 + (y_iterator * 8) + xa
-      ranges.append(range(
-        point, point + width
-      ))
-
-    return list(itertools.chain.from_iterable(ranges))
+  def handle_note_in(self, event):
+    print "got a note in message"
