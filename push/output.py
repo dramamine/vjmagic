@@ -21,6 +21,18 @@ class AbletonPush:
     msg = SYSEX_START + [idx, 0, 0] + SYSEX_TERM
     self.midiout.send_message(msg)
 
+  def set_display_cells(self, line, cells):
+    val_strings = map(lambda x: str(x).center(8), cells[:8])
+    # annoying spacing
+    outstr = ''
+    ctr = 0
+    for val_string in val_strings:
+      outstr = outstr + val_string
+      if ctr % 2 == 0:
+        outstr = outstr + " "
+      ctr = ctr + 1
+    self.set_display_line(line, outstr)
+
   def set_display_line(self, line, str):
     self.set_display_bytes(line, self.get_bytes(str))
 
@@ -31,7 +43,7 @@ class AbletonPush:
     msg = SYSEX_START + [(24 + line), 0, 69, 0] + bytes + SYSEX_TERM
     self.midiout.send_message(msg)
 
-  def clearDisplay(self):
+  def clear_display(self):
     # TODO map
     for i in range(0,3):
       self.clearDisplayLine(i)

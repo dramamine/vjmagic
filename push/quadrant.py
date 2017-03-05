@@ -44,8 +44,8 @@ class Quadrant:
     Quadrant.apply_color(self.push, self.selected, [thing])
 
   def unselect(self, event):
-    print "unselect was called."
-    Quadrant.apply_color(self.push, self.palette[0], [self.exception])
+    if self.exception >= 0:
+      Quadrant.apply_color(self.push, self.palette[0], [self.exception])
     self.push.unlight_user_button(self.toggler)
     self.exception = -1
 
@@ -54,8 +54,8 @@ class Quadrant:
       self.toggle(note)
 
   @staticmethod
-  def apply_color(push, color, list):
-    for note in list:
+  def apply_color(push, color, buttons):
+    for note in buttons:
       push.note_sender([constants.MIDI_NOTE_ON, note, color])
 
   # (0,0), (3,3) gives you the lower left quadrant
