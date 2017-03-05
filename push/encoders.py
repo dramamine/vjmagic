@@ -17,10 +17,12 @@ class Encoders:
   ableton_out = None
   update_display = None
   labels = []
+  display_mode = ''
 
   #
   def __init__(self):
     self.update_display = self.update_display_basic
+    self.display_mode = 'BASIC'
     return
 
   # register listeners for updates coming from the push
@@ -50,36 +52,43 @@ class Encoders:
 
 
   def set_display_mode(self, mode, labels):
-    self.ableton_out.clear_display()
+    print "set_display_mode called", mode, labels
+    if mode == self.display_mode:
+      return
     if mode == 'BASIC':
+      print "switching to basic display"
       self.update_display = self.update_display_basic
       self.labels = labels
+      print "switched"
     elif mode == 'TOUCH':
+      print "switching to touch display"
       self.update_display = self.update_display_touchy
     else:
       print "WTF wrong mode y'all"
       return "WTF"
 
-    # set labels
-    self.update_display
+    self.display_mode = mode
+    # clear before we do anything...
+    self.ableton_out.clear_display()
+    self.update_display()
 
   # handle an event coming from the push
   def handle_push_turns(self, event):
     (status, data1, data2) = event
     try:
-        encoder = ENCODERS.index(data1)
+      encoder = ENCODERS.index(data1)
     except ValueError:
-        return None
+      return None
 
     # splitting between increments and decrements
     if data2 < 64:
-        new_cc = min(127, self.values[encoder] + (SENSITIVITY * data2) )
+      new_cc = min(127, self.values[encoder] + (SENSITIVITY * data2) )
     else:
-        new_cc = max(0, self.values[encoder] - (SENSITIVITY * (128 - data2) ) )
+      new_cc = max(0, self.values[encoder] - (SENSITIVITY * (128 - data2) ) )
 
     print "updating encoder to ", new_cc, "on event:", event
     # relay the new value from ch1 to ch2
-    self.ableton_out.thru([STATUS_CH2, data1, new_cc])
+    self.ableton_out.thru([constants.STATUS_CH2, data1, new_cc])
 
     # we were updating the display here...
     # but now lets try waiting for updates from resolume instead.
@@ -111,6 +120,7 @@ class Encoders:
     self.update_display()
 
   def update_display_basic(self):
+    print "update display basic called"
     val_strings = map(lambda x: str(x).center(8), self.values[:self.active_knobs])
     # annoying spacing
     outstr = ''
@@ -130,7 +140,6 @@ class Encoders:
 
   def update_display_touchy(self):
     val_cells = map(lambda x: 'x'*8 if x else ' '*8, self.touched[:self.active_knobs])
-    print "here are my cell vals:", val_cells
     self.ableton_out.set_display_cells(0, val_cells)
     self.ableton_out.set_display_cells(1, val_cells)
     self.ableton_out.set_display_cells(2, val_cells)

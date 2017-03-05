@@ -6,6 +6,7 @@ import sys, os
 from push.output import AbletonPush
 from push.listener import PushEventListener
 from push.encoders import Encoders
+from push.encoder_controller import EncoderController
 from push.graphics import Graphics
 
 # always flush stdout
@@ -81,6 +82,19 @@ encoders = Encoders()
 encoders.register_listeners(pel)
 encoders.register_resolume_listener(res_listener)
 encoders.load_output(ap)
+
+ec = EncoderController(encoders)
+ec.register_listeners(pel)
+draft = [
+  ['TOUCH', None, [
+    72, 73, 74, 75,
+    80, 81, 82, 83,
+    88, 89, 90, 91,
+    96, 97, 98, 99]],
+  ['BASIC', ['STR', 'MAG', 'INT', 'DEX', 'CON'], range(36,39)]
+]
+
+ec.load_config(draft)
 
 graphics = Graphics(pel, ap)
 graphics.loop()
