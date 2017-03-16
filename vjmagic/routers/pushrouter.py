@@ -1,19 +1,18 @@
-from push.listener import PushEventListener
-import constants
+# from push.listener import PushEventListener
+from vjmagic import constants
 import rtmidi
+from vjmagic.routers.base import Router
+from vjmagic.interface import outpututils
 
-class AbletonOutListener:
-  name = "ableton push input"
-  listeners = []
+class PushRouter(Router):
   encoders = None
   encoder_controller = None
-  output = None
 
   # TODO probably want singletons for this
-  def __init__(self, encoders=None, encoder_controller=None, output=None):
+  def __init__(self, encoders=None, encoder_controller=None):
+    Router.__init__(self, "push input")
     self.encoders = encoders
     self.encoder_controller = encoder_controller
-    self.output = output
     # setup inputs
     midiinputs = [rtmidi.MidiIn()]
     for idx, device in enumerate(midiinputs[0].get_ports()):
@@ -58,7 +57,7 @@ class AbletonOutListener:
     # fwd any messages (that we didn't eat) onwards to the Push
     if not eater:
       print "sending it forward."
-      self.output.thru(event[0])
+      outpututils.thru(event[0])
 
   # note ons are either:
   # - pressing colored buttons. route these through to Resolume
@@ -66,6 +65,7 @@ class AbletonOutListener:
   def handle_note_ons(self, event, data=None):
     (status, data1, data2) = event
     if (data1 <= 8):
+      print "touched by an angel"
       self.encoders.handle_push_touches(event)
     else:
-      self.output.thru(event)
+      outpututils.thru(event)

@@ -1,7 +1,4 @@
-
-
-
-import constants
+from vjmagic import constants
 
 ENCODERS = [71, 72, 73, 74, 75, 76, 77, 78, 79]
 

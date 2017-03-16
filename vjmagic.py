@@ -3,13 +3,16 @@ import itertools
 import time
 import sys, os
 
-from push.output import AbletonPush
-from push.listener import PushEventListener
-from push.encoders import Encoders
-from push.encoder_controller import EncoderController
-from push.graphics import Graphics
+# import push
+# import routers
 
-from routers.ableton_out import AbletonOutListener
+from vjmagic.interface import outpututils
+from vjmagic.interface.listener import PushEventListener
+from vjmagic.interface.encoders import Encoders
+from vjmagic.interface.encoder_controller import EncoderController
+from vjmagic.interface.graphics import Graphics
+
+from vjmagic.routers.pushrouter import PushRouter
 
 # always flush stdout
 # http://stackoverflow.com/questions/230751/how-to-flush-output-of-python-print
@@ -84,14 +87,18 @@ else:
 
 
 
-ap = AbletonPush(midiout, midithru)
-pel.load_output(ap)
+# ap = AbletonPush(midiout, midithru)
+outpututils.midiout = midiout
+outpututils.midithru = midithru
+
+#
+pel.load_output(outpututils)
 
 # get those encoders happenin'
 encoders = Encoders()
 encoders.register_listeners(pel)
 encoders.register_resolume_listener(res_listener)
-encoders.load_output(ap)
+encoders.load_output(outpututils)
 
 ec = EncoderController(encoders)
 ec.register_listeners(pel)
@@ -106,8 +113,7 @@ draft = [
 
 ec.load_config(draft)
 
-aol = AbletonOutListener(encoders=encoders, encoder_controller=ec,
-  output=ap)
+aol = PushRouter(encoders=encoders, encoder_controller=ec)
 print "aol loaded"
 
 def words():
@@ -116,12 +122,12 @@ def words():
   # this clears out a line
   # ap.clearDisplay()
 
-  ap.set_display_bytes(2, map(lambda x: int(x), range(68)))
-  ap.set_display_bytes(3, map(lambda x: int(x), range(69,127)))
+  outpututils.set_display_bytes(2, map(lambda x: int(x), range(68)))
+  outpututils.set_display_bytes(3, map(lambda x: int(x), range(69,127)))
 
 words()
 
-graphics = Graphics(pel, ap)
+graphics = Graphics(pel, outpututils)
 graphics.loop()
 
 

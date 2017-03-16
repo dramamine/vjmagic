@@ -1,7 +1,4 @@
-
-
-
-import constants
+from vjmagic import constants
 
 class EncoderController:
   def __init__(self, encoder):

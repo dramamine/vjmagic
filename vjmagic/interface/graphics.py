@@ -1,6 +1,6 @@
 import threading
-import constants
-from quadrant import Quadrant
+from vjmagic import constants
+from vjmagic.interface.quadrant import Quadrant
 
 def setInterval(func, time):
   e = threading.Event()

@@ -1,4 +1,4 @@
-import constants
+from vjmagic import constants
 import itertools
 from random import shuffle
 
