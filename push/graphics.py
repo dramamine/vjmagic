@@ -33,8 +33,11 @@ class Graphics:
       Quadrant(push, oranges, constants.BUTTON_UNDO, selected, (4,4), (7,7)),
     ]
 
+    # listeners for glowy buttons being pressed
     listener.add_listener([constants.MIDI_NOTE_ON, None, None],
       self.handle_note_in, False)
+
+    # listeners for the "layer toggle buttons"
     listener.add_listener([constants.PRESS_USER_BUTTON, constants.BUTTON_QUANTIZE, None],
       self.quadrants[0].unselect, False)
     listener.add_listener([constants.PRESS_USER_BUTTON, constants.BUTTON_DOUBLE, None],

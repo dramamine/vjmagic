@@ -16,7 +16,7 @@ class AbletonPush:
     self.midiout = Output
     self.midithru = Thru
 
-  def clearDisplayLine(self, line):
+  def clear_display_line(self, line):
     idx = 28 + line
     msg = SYSEX_START + [idx, 0, 0] + SYSEX_TERM
     self.midiout.send_message(msg)
@@ -46,7 +46,7 @@ class AbletonPush:
   def clear_display(self):
     # TODO map
     for i in range(0,3):
-      self.clearDisplayLine(i)
+      self.clear_display_line(i)
 
   # true for user mode, false for live mode
   def set_user_mode(self, user=True):

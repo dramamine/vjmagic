@@ -1,10 +1,5 @@
 
-fourth_box = [
-  72, 73, 74, 75,
-  80, 81, 82, 83,
-  88, 89, 90, 91,
-  96, 97, 98, 99
-]
+
 
 import constants
 
@@ -13,7 +8,7 @@ class EncoderController:
     self.encoder = encoder
     return
   def register_listeners(self, listener):
-    listener.add_listener([constants.MIDI_NOTE_ON, None, None], self.check_for_encoder_change, False)
+    listener.add_listener([constants.MIDI_NOTE_ON, None, None], self.check_for_encoder_change, True)
 
   def load_config(self, config):
     self.config = config
@@ -28,12 +23,12 @@ class EncoderController:
       return
 
     for x in self.config:
-      print "my x is:", x
+      # print "my x is:", x
 
       (mode, label, keys) = x
       try:
         if keys.index(data1) >= 0:
-          print "if was true"
+          print "a grid button was pressed and was in this config:", data1, mode
           return self.encoder.set_display_mode(mode, label)
       except ValueError:
         pass

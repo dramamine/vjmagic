@@ -55,13 +55,20 @@ class Encoders:
     print "set_display_mode called", mode, labels
     if mode == self.display_mode:
       return
+    else:
+      print mode, "was not", self.display_mode
+
     if mode == 'BASIC':
       print "switching to basic display"
+      self.ableton_out.clear_display_line(2)
+      self.ableton_out.clear_display_line(3)
       self.update_display = self.update_display_basic
       self.labels = labels
       print "switched"
     elif mode == 'TOUCH':
       print "switching to touch display"
+      # reset values bc it gets weird otherwise
+      self.touched = [False] * 9
       self.update_display = self.update_display_touchy
     else:
       print "WTF wrong mode y'all"
@@ -75,6 +82,7 @@ class Encoders:
   # handle an event coming from the push
   def handle_push_turns(self, event):
     (status, data1, data2) = event
+    print "ok push turns is handled.", data1, data2
     try:
       encoder = ENCODERS.index(data1)
     except ValueError:
@@ -98,6 +106,7 @@ class Encoders:
   # ex. (144, 0, 127) means the first knob was touched
   # ex. (144, 0, 0) means the first knob was untouched
   def handle_push_touches(self, event):
+
     (status, data1, data2) = event
     if (data1 > 8):
       return
@@ -119,6 +128,7 @@ class Encoders:
     self.values[encoder] = data2
     self.update_display()
 
+  ## update the display using 'basic' mode
   def update_display_basic(self):
     print "update display basic called"
     val_strings = map(lambda x: str(x).center(8), self.values[:self.active_knobs])
@@ -138,6 +148,7 @@ class Encoders:
       self.labels + [''] * (8 - len(self.labels)) # pad to 8 with empty strings
     )
 
+  # update the display using 'touch' mode
   def update_display_touchy(self):
     val_cells = map(lambda x: 'x'*8 if x else ' '*8, self.touched[:self.active_knobs])
     self.ableton_out.set_display_cells(0, val_cells)

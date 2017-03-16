@@ -3,6 +3,7 @@
 class PushEventListener:
   inputs = []
   listeners = []
+  whitelist = []
   ableton_out = None
   def __init__(self):
     return
@@ -20,6 +21,9 @@ class PushEventListener:
 
   def add_listener(self, event, cb, eat=True):
     self.listeners.append([event, cb, eat])
+
+  def add_whitelist(self, event):
+    self.whitelist.append(event)
 
   def router(self, event, data=None):
     (status, data1, data2) = event[0]
@@ -43,4 +47,39 @@ class PushEventListener:
 
     # fwd any messages (that we didn't eat) onwards to the Push
     if not eater:
+      print "I told you this was getting trhough"
       self.ableton_out.thru(event[0])
+
+  def silent_router(self, event, data=None):
+    (status, data1, data2) = event[0]
+    # TODO helpful for debugging
+    print event
+
+    eater = False
+    for [lstatus, ldata1, ldata2], cb, eat in self.listeners:
+      if (lstatus == None or lstatus == status) and \
+        (ldata1 == None or ldata1 == data1) and \
+        (ldata2 == None or ldata2 == data2):
+
+        # safer to ignore errors here; don't want to interrupt eating behavior
+        try:
+          cb(event[0])
+        except Exception as e:
+          print e
+
+        # if one listener says eat it, then do that.
+        eater = eater or eat
+
+    # # fwd any messages (that we didn't eat) onwards to the Push
+    # if not eater:
+    #   self.ableton_out.thru(event[0])
+
+  def whitelist_router(self, event, data=None):
+    (status, data1, data2) = event[0]
+    print "whitelist is checking:", event[0]
+    for [lstatus, ldata1, ldata2] in self.whitelist:
+      if (lstatus == None or lstatus == status) and \
+        (ldata1 == None or ldata1 == data1) and \
+        (ldata2 == None or ldata2 == data2):
+        print "forwarding onward"
+        self.ableton_out.thru(event[0])
