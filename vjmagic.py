@@ -8,11 +8,12 @@ import sys, os
 
 from vjmagic.interface import outpututils
 from vjmagic.interface.listener import PushEventListener
-from vjmagic.interface.encoders import Encoders
+# from vjmagic.interface.encoders import Encoders
 from vjmagic.interface.encoder_controller import EncoderController
 from vjmagic.interface.graphics import Graphics
 
 from vjmagic.routers.pushrouter import PushRouter
+from vjmagic.routers.resolumerouter import ResolumeRouter
 
 # always flush stdout
 # http://stackoverflow.com/questions/230751/how-to-flush-output-of-python-print
@@ -44,20 +45,20 @@ pel = PushEventListener()
 
 
 
-resolume_in_name = "resolume out"
-resin = rtmidi.MidiIn()
-portid = find_port_index(resin, resolume_in_name)
-if portid >= 0:
-    resin.open_port(portid)
-else:
-    print "didnt find ", resin, "how will I get updates from resolume?"
+# resolume_in_name = "resolume out"
+# resin = rtmidi.MidiIn()
+# portid = find_port_index(resin, resolume_in_name)
+# if portid >= 0:
+#     resin.open_port(portid)
+# else:
+#     print "didnt find ", resin, "how will I get updates from resolume?"
 
 # eating stuff like 'note on', since Resolume relays those, but Push already told us.
 # however, we want to send CCs on because those should be in sync with Resolume.
-res_listener = PushEventListener()
+# res_listener = PushEventListener()
 # res_listener.add_whitelist([177, None, None])
 # res_listener.add_whitelist([178, None, None])
-resin.set_callback(res_listener.silent_router)
+# resin.set_callback(res_listener.silent_router)
 
 
 ableton_push_out_name = "midiout2"
@@ -95,13 +96,14 @@ outpututils.midithru = midithru
 pel.load_output(outpututils)
 
 # get those encoders happenin'
-encoders = Encoders()
-encoders.register_listeners(pel)
-encoders.register_resolume_listener(res_listener)
-encoders.load_output(outpututils)
+# encoders = Encoders()
+# encoders.register_listeners(pel)
+# encoders.register_resolume_listener(res_listener)
+# encoders.load_output(outpututils)
 
-ec = EncoderController(encoders)
-ec.register_listeners(pel)
+# ec = EncoderController(encoders)
+# ec.register_listeners(pel)
+#
 draft = [
   ['TOUCH', None, [
     72, 73, 74, 75,
@@ -111,10 +113,13 @@ draft = [
   ['BASIC', ['STR', 'MAG', 'INT', 'DEX', 'CON'], range(36,39)]
 ]
 
-ec.load_config(draft)
+# ec.load_config(draft)
 
-aol = PushRouter(encoders=encoders, encoder_controller=ec)
+aol = PushRouter()
 print "aol loaded"
+
+res = ResolumeRouter()
+print "res loaded"
 
 def words():
   # ap.set_user_mode()

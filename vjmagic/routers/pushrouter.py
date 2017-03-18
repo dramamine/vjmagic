@@ -3,15 +3,14 @@ from vjmagic import constants
 import rtmidi
 from vjmagic.routers.base import Router
 from vjmagic.interface import outpututils
+from vjmagic.interface import encoders
 
 class PushRouter(Router):
-  encoders = None
   encoder_controller = None
 
   # TODO probably want singletons for this
-  def __init__(self, encoders=None, encoder_controller=None):
+  def __init__(self, encoder_controller=None):
     Router.__init__(self, "push input")
-    self.encoders = encoders
     self.encoder_controller = encoder_controller
     # setup inputs
     midiinputs = [rtmidi.MidiIn()]
@@ -66,6 +65,6 @@ class PushRouter(Router):
     (status, data1, data2) = event
     if (data1 <= 8):
       print "touched by an angel"
-      self.encoders.handle_push_touches(event)
+      encoders.handle_push_touches(event)
     else:
       outpututils.thru(event)
