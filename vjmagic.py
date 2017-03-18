@@ -9,7 +9,7 @@ import sys, os
 from vjmagic.interface import outpututils
 from vjmagic.interface.listener import PushEventListener
 # from vjmagic.interface.encoders import Encoders
-from vjmagic.interface.encoder_controller import EncoderController
+from vjmagic.interface import encodercontroller
 from vjmagic.interface.graphics import Graphics
 
 from vjmagic.routers.pushrouter import PushRouter
@@ -101,7 +101,7 @@ pel.load_output(outpututils)
 # encoders.register_resolume_listener(res_listener)
 # encoders.load_output(outpututils)
 
-# ec = EncoderController(encoders)
+
 # ec.register_listeners(pel)
 #
 draft = [
@@ -112,8 +112,7 @@ draft = [
     96, 97, 98, 99]],
   ['BASIC', ['STR', 'MAG', 'INT', 'DEX', 'CON'], range(36,39)]
 ]
-
-# ec.load_config(draft)
+encodercontroller.load_config(draft)
 
 aol = PushRouter()
 print "aol loaded"

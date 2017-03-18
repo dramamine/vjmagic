@@ -36,16 +36,18 @@ class ResolumeRouter(Router):
     evt = event[0]
     (status, data1, data2) = evt
     # TODO helpful for debugging
-    print self.name, evt
+    print self.name, evt, status
 
     # eater = False
     # used to be a 'whitelist' of routers here, ex. 177 and 178 were whitelisted
     if status == constants.STATUS_CH2:
+      print "yep resolume update"
       encoders.handle_resolume_updates(evt)
     elif status == constants.STATUS_CH1:
       encoders.handle_push_turns(evt)
     elif status == constants.MIDI_NOTE_ON:
       encoders.handle_push_touches(evt)
+      encoder_controller.check_for_category_change(evt)
       return
 
     # let's just send everything else through for now

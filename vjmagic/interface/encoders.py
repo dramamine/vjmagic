@@ -89,9 +89,9 @@ def set_display_mode(mode, tolabels):
   update_display()
 
 # handle an event coming from the push
-def handle_push_turns(self, event):
+def handle_push_turns(event):
   (status, data1, data2) = event
-  print "ok push turns is handled.", data1, data2
+  print "ok push turns is handled.", event
   try:
     encoder = ENCODERS.index(data1)
   except ValueError:
@@ -109,8 +109,8 @@ def handle_push_turns(self, event):
 
   # we were updating the display here...
   # but now lets try waiting for updates from resolume instead.
-  # self.values[encoder] = new_cc
-  # self.update_display()
+  values[encoder] = new_cc
+  update_display()
 
 # ex. (144, 0, 127) means the first knob was touched
 # ex. (144, 0, 0) means the first knob was untouched
@@ -120,6 +120,7 @@ def handle_push_touches(event):
   if (data1 > 8):
     return
   touched[data1] = bool(data2)
+  print "touched:", event
   update_display()
 
 
@@ -127,10 +128,13 @@ def handle_push_touches(event):
 
 # handle an event coming from resolume
 def handle_resolume_updates(event):
+
+
   (status, data1, data2) = event
   try:
     encoder = ENCODERS.index(data1)
   except ValueError:
+    print "couldnt find", data1
     return None
 
   print "resolume sez: set encoder ", encoder, " with index", data1, " from ", values[encoder], " to ", data2
