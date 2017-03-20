@@ -10,7 +10,7 @@ from vjmagic.interface import outpututils
 from vjmagic.interface.listener import PushEventListener
 # from vjmagic.interface.encoders import Encoders
 from vjmagic.interface import encodercontroller
-from vjmagic.interface.graphics import Graphics
+from vjmagic.interface import graphics
 
 from vjmagic.routers.pushrouter import PushRouter
 from vjmagic.routers.resolumerouter import ResolumeRouter
@@ -19,7 +19,7 @@ from vjmagic.routers.resolumerouter import ResolumeRouter
 # http://stackoverflow.com/questions/230751/how-to-flush-output-of-python-print
 sys.stdout = os.fdopen(sys.stdout.fileno(), 'w', 0)
 
-midiout = rtmidi.MidiOut()
+# midiout = rtmidi.MidiOut()
 # midiinputs = [rtmidi.MidiIn()]
 
 def find_port_index(midi, str):
@@ -30,67 +30,7 @@ def find_port_index(midi, str):
 
 # open any pushy inputs
 pel = PushEventListener()
-# for idx, device in enumerate(midiinputs[0].get_ports()):
-#   print "considering device ", device
-#   if "ableton push" in device.lower():
-#     print "opening input port:", device
-#     midiinputs[0].open_port(idx)
-#     midiinputs[0].set_callback(pel.router)
 
-#     midiinputs = [rtmidi.MidiIn()] + midiinputs
-#     # pel.load_midiin(midiin)
-#     #midiin = rtmidi.MidiIn()
-#     # break
-
-
-
-
-# resolume_in_name = "resolume out"
-# resin = rtmidi.MidiIn()
-# portid = find_port_index(resin, resolume_in_name)
-# if portid >= 0:
-#     resin.open_port(portid)
-# else:
-#     print "didnt find ", resin, "how will I get updates from resolume?"
-
-# eating stuff like 'note on', since Resolume relays those, but Push already told us.
-# however, we want to send CCs on because those should be in sync with Resolume.
-# res_listener = PushEventListener()
-# res_listener.add_whitelist([177, None, None])
-# res_listener.add_whitelist([178, None, None])
-# resin.set_callback(res_listener.silent_router)
-
-
-ableton_push_out_name = "midiout2"
-portid = find_port_index(midiout, ableton_push_out_name)
-if portid >= 0:
-    midiout.open_port(portid)
-else:
-    print "didnt find ", ableton_push_out_name, "how will I send stuff to Push?"
-    exit(1)
-
-# for idx, device in enumerate(midiout.get_ports()):
-#   print "considering device ", device
-#   if "midiout2" in device.lower():
-#     print "opening output port:", device
-#     midiout.open_port(idx)
-#     break
-
-# note: rtmidi doesn't seem super happy about making virtual ports on Windows.
-# use loopMidi to define your virtual port ahead of time.
-vport = "python out"
-midithru = rtmidi.MidiOut()
-portid = find_port_index(midithru, vport)
-if portid >= 0:
-    midithru.open_port(portid)
-else:
-    midithru.open_virtual_port(vport)
-
-
-
-# ap = AbletonPush(midiout, midithru)
-outpututils.midiout = midiout
-outpututils.midithru = midithru
 
 #
 pel.load_output(outpututils)
@@ -131,8 +71,16 @@ def words():
 
 words()
 
-graphics = Graphics(pel, outpututils)
-graphics.loop()
+# could also try: signal, SIGINT. not working that well with Windows + Python2
+try:
+  graphics.loop()
+except KeyboardInterrupt:
+  outpututils.clear_display()
+  print "bye"
+  sys.exit(0)
+
+
+
 
 
 # everything_off()

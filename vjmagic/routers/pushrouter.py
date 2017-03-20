@@ -4,6 +4,7 @@ import rtmidi
 from vjmagic.routers.base import Router
 from vjmagic.interface import outpututils
 from vjmagic.interface import encoders
+from vjmagic.interface import graphics
 
 class PushRouter(Router):
   encoder_controller = None
@@ -24,47 +25,36 @@ class PushRouter(Router):
     # need this or it gets...garbage-collected?!?
     self.midiinputs = midiinputs
 
-    # setup listeners
-    self.listeners.append([[constants.STATUS_CH1, None, None],
-      encoders.handle_push_turns, True])
-
-    self.listeners.append([[constants.MIDI_NOTE_ON, None, None],
-      self.handle_note_ons, True])
 
   # this handler's probably in every router
   def handler(self, event, data=None):
-    print "AOL handler called"
-    (status, data1, data2) = event[0]
-    # TODO helpful for debugging
-    print self.name, event[0]
+    evt = event[0]
+    (status, data1, data2) = evt
+    print self.name, evt
 
-    eater = False
-    for [lstatus, ldata1, ldata2], cb, eat in self.listeners:
-      if (lstatus == None or lstatus == status) and \
-        (ldata1 == None or ldata1 == data1) and \
-        (ldata2 == None or ldata2 == data2):
+    if status == constants.STATUS_CH1:
+      encoders.handle_push_turns(evt)
+      if data1 == constants.GRAPHICS_KNOB:
+        graphics.handle_push_turns(evt)
+      return
+    elif status == constants.MIDI_NOTE_ON:
+      # TODO consider moving this function to resolume side
+      graphics.handle_note_in(evt)
+      if data1 <= 10:
+        encoders.handle_push_touches(event)
+        return
+    elif status == constants.PRESS_USER_BUTTON:
+      graphics.handle_user_button_presses(evt)
 
-        # safer to ignore errors here; don't want to interrupt eating behavior
-        try:
-          cb(event[0])
-        except Exception as e:
-          print e
 
-        # if one listener says eat it, then do that.
-        eater = eater or eat
 
-    # fwd any messages (that we didn't eat) onwards to the Push
-    if not eater:
-      print "sending it forward."
-      outpututils.thru(event[0])
+
+
+
+    outpututils.thru(event[0])
 
   # note ons are either:
   # - pressing colored buttons. route these through to Resolume
   # - touching knobs. send these to our encoders model
   def handle_note_ons(self, event, data=None):
     (status, data1, data2) = event
-    if (data1 <= 8):
-      print "touched by an angel"
-      encoders.handle_push_touches(event)
-    else:
-      outpututils.thru(event)

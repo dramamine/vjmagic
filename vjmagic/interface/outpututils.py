@@ -5,9 +5,28 @@ SYSEX_START = [240, 71, 127, 21]
 SYSEX_TERM = [247]
 
 from vjmagic import constants
+import rtmidi
+from vjmagic.routers.base import Router
 
-midiout = None
-midithru = None
+ableton_push_out_name = "midiout2"
+midiout = rtmidi.MidiOut()
+portid = Router.find_port_index(midiout, ableton_push_out_name)
+if portid >= 0:
+    midiout.open_port(portid)
+else:
+    print "didnt find ", ableton_push_out_name, "how will I send stuff to Push?"
+    # exit(1)
+
+# note: rtmidi doesn't seem super happy about making virtual ports on Windows.
+# use loopMidi to define your virtual port ahead of time.
+vport = "python out"
+midithru = rtmidi.MidiOut()
+portid = Router.find_port_index(midithru, vport)
+if portid >= 0:
+    midithru.open_port(portid)
+else:
+    midithru.open_virtual_port(vport)
+
 
 def clear_display_line(line):
   idx = 28 + line

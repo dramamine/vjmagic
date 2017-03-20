@@ -123,13 +123,8 @@ def handle_push_touches(event):
   print "touched:", event
   update_display()
 
-
-
-
 # handle an event coming from resolume
 def handle_resolume_updates(event):
-
-
   (status, data1, data2) = event
   try:
     encoder = ENCODERS.index(data1)
