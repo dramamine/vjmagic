@@ -15,10 +15,13 @@ def check_for_category_change(event):
     return
 
   for x in CONFIG:
-    (mode, label, keys) = x
+    keys = x['keys']
+    mode = x['mode']
+    labels = x['labels']
+    active = x['active']
     try:
       if keys.index(data1) >= 0:
-        return encoders.set_display_mode(mode, label)
+        return encoders.set_display_mode(mode, labels, active)
     except ValueError:
       pass
 

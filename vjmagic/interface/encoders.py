@@ -27,8 +27,9 @@ def update_value(encoder, value):
   state.values[encoder] = value
 
 
-def set_display_mode(mode, tolabels):
-  print("set_display_mode called", mode, tolabels)
+def set_display_mode(mode, tolabels, active):
+  print("set_display_mode called", mode, tolabels, active)
+  state.active_knobs = active
   if mode == state.display_mode:
     return
   else:
