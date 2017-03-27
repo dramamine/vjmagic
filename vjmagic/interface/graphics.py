@@ -35,7 +35,7 @@ def handle_user_button_presses(evt):
   (status, data1, data2) = evt
   try:
     quad = constants.LAYER_TOGGLE_BUTTONS.index(data1)
-    print "found LAYER_TOGGLE_BUTTONS => quad", quad
+    print("found LAYER_TOGGLE_BUTTONS => quad", quad)
     __QUADRANTS__[quad].unselect
   except ValueError:
     pass

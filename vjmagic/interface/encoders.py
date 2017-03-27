@@ -19,42 +19,6 @@ state.update_display = None
 state.labels = []
 state.display_mode = 'BASIC'
 
-
-# class Encoders:
-#   touched = [False] * 9
-#   values = [0] * 9
-#   active_knobs = 8
-#   ableton_out = None
-#   update_display = None
-#   labels = []
-#   display_mode = ''
-
-#   #
-#   def __init__(self):
-#     self.update_display = self.update_display_basic
-#     self.display_mode =
-#     return
-
-# register listeners for updates coming from the push
-# listener {EventListener} the listener from "push out"
-# def register_listeners(self, listener):
-#   for x in ENCODERS:
-#     listener.add_listener([constants.STATUS_CH1, x, None], self.handle_push_turns, True)
-
-#   listener.add_listener([constants.MIDI_NOTE_ON, None, None], self.handle_push_touches, False)
-
-
-
-# register listeners coming from resolume.
-# listener {EventListener} the listener from "resolume out"
-# def register_resolume_listener(self, listener):
-#   listener.add_listener([constants.STATUS_CH2, None, None], self.handle_resolume_updates, True)
-
-# load "ableton out" port
-# def load_output(self, ableton_out):
-#   ableton_out = ableton_out
-#   update_display()
-
 # update the value of an encoder
 #
 # encoder {Int} The encoder ID (0-8)
@@ -64,26 +28,26 @@ def update_value(encoder, value):
 
 
 def set_display_mode(mode, tolabels):
-  print "set_display_mode called", mode, tolabels
+  print("set_display_mode called", mode, tolabels)
   if mode == state.display_mode:
     return
   else:
-    print mode, "was not", state.display_mode
+    print(mode, "was not", state.display_mode)
 
   if mode == 'BASIC':
-    print "switching to basic display"
+    print("switching to basic display")
     outpututils.clear_display_line(2)
     outpututils.clear_display_line(3)
     state.update_display = update_display_basic
     state.labels = tolabels
-    print "switched"
+    print("switched")
   elif mode == 'TOUCH':
-    print "switching to touch display"
+    print("switching to touch display")
     # reset values bc it gets weird otherwise
     state.touched = [False] * 9
     state.update_display = update_display_touchy
   else:
-    print "WTF wrong mode y'all"
+    print("WTF wrong mode y'all")
     return "WTF"
 
   state.display_mode = mode
@@ -94,7 +58,7 @@ def set_display_mode(mode, tolabels):
 # handle an event coming from the push
 def handle_push_turns(event):
   (status, data1, data2) = event
-  print "ok push turns is handled.", event
+  print("ok push turns is handled.", event)
   try:
     encoder = ENCODERS.index(data1)
   except ValueError:
@@ -106,7 +70,7 @@ def handle_push_turns(event):
   else:
     new_cc = max(0, state.values[encoder] - (SENSITIVITY * (128 - data2) ) )
 
-  print "updating encoder to ", new_cc, "on event:", event
+  print("updating encoder to ", new_cc, "on event:", event)
   # relay the new value from ch1 to ch2
   outpututils.thru([constants.STATUS_CH2, data1, new_cc])
 
@@ -123,7 +87,7 @@ def handle_push_touches(event):
   if (data1 > 8):
     return
   state.touched[data1] = bool(data2)
-  print "touched:", event
+  print("touched:", event)
   state.update_display()
 
 # handle an event coming from resolume
@@ -132,7 +96,7 @@ def handle_resolume_updates(event):
   try:
     encoder = ENCODERS.index(data1)
   except ValueError:
-    print "couldnt find", data1
+    print("couldnt find", data1)
     return None
 
   print "resolume sez: set encoder ", encoder, " with index", data1, " from ", state.values[encoder], " to ", data2

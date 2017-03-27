@@ -3,15 +3,7 @@ import itertools
 import time
 import sys, os
 
-# import push
-# import routers
-
-from vjmagic.interface import outpututils
-from vjmagic.interface.listener import PushEventListener
-# from vjmagic.interface.encoders import Encoders
-from vjmagic.interface import encodercontroller
-from vjmagic.interface import graphics
-
+from vjmagic.interface import encodercontroller, graphics, outpututils
 from vjmagic.routers.pushrouter import PushRouter
 from vjmagic.routers.resolumerouter import ResolumeRouter
 
@@ -19,22 +11,6 @@ from vjmagic.routers.resolumerouter import ResolumeRouter
 # http://stackoverflow.com/questions/230751/how-to-flush-output-of-python-print
 sys.stdout = os.fdopen(sys.stdout.fileno(), 'w', 0)
 
-# open any pushy inputs
-# pel = PushEventListener()
-
-
-# #
-# pel.load_output(outpututils)
-
-# get those encoders happenin'
-# encoders = Encoders()
-# encoders.register_listeners(pel)
-# encoders.register_resolume_listener(res_listener)
-# encoders.load_output(outpututils)
-
-
-# ec.register_listeners(pel)
-#
 draft = [
   ['TOUCH', None, [
     72, 73, 74, 75,
@@ -51,10 +27,10 @@ draft = [
 encodercontroller.load_config(draft)
 
 aol = PushRouter()
-print "aol loaded"
+print("push loaded.")
 
 res = ResolumeRouter()
-print "res loaded"
+print("resolume loaded.")
 
 # def words():
 #   # ap.set_user_mode()

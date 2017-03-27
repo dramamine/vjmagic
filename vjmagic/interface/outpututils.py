@@ -14,7 +14,7 @@ portid = Router.find_port_index(midiout, ableton_push_out_name)
 if portid >= 0:
     midiout.open_port(portid)
 else:
-    print "didnt find ", ableton_push_out_name, "how will I send stuff to Push?"
+    print("didnt find ", ableton_push_out_name, "how will I send stuff to Push?")
     # exit(1)
 
 # note: rtmidi doesn't seem super happy about making virtual ports on Windows.

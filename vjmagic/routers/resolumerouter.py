@@ -2,9 +2,9 @@
 from vjmagic import constants
 import rtmidi
 from vjmagic.routers.base import Router
-from vjmagic.interface import encoders
-from vjmagic.interface import outpututils
+from vjmagic.interface import encodercontroller, encoders, outpututils
 
+# Route messages from Resolume
 class ResolumeRouter(Router):
   encoders = None
   encoder_controller = None
@@ -20,9 +20,8 @@ class ResolumeRouter(Router):
     if portid >= 0:
         resin.open_port(portid)
         resin.set_callback(self.handler)
-        print "ok, callback set"
     else:
-        print "didnt find ", resin, "how will I get updates from resolume?"
+        print("didnt find ", resin, "how will I get updates from resolume?")
 
 
     # need this or it gets...garbage-collected?!?
@@ -34,12 +33,11 @@ class ResolumeRouter(Router):
   def handler(self, event, data=None):
     evt = event[0]
     (status, data1, data2) = evt
-    print self.name, evt
+    print(self.name, evt)
 
     # eater = False
     # used to be a 'whitelist' of routers here, ex. 177 and 178 were whitelisted
     if status == constants.STATUS_CH2:
-      print "yep resolume update"
       encoders.handle_resolume_updates(evt)
     elif status == constants.STATUS_CH1:
       encoders.handle_push_turns(evt)

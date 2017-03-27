@@ -2,15 +2,15 @@
 from vjmagic import constants
 import rtmidi
 from vjmagic.routers.base import Router
-from vjmagic.interface import outpututils, encoders, graphics, encodercontroller
+from vjmagic.interface import encodercontroller, encoders, graphics, outpututils
 
+# Route messages from the Push (i.e. humans touching things)
 class PushRouter(Router):
   encoder_controller = None
 
-  # TODO probably want singletons for this
-  def __init__(self, encoder_controller=None):
+  # constructor
+  def __init__(self):
     Router.__init__(self, "push input")
-    self.encoder_controller = encoder_controller
     # setup inputs
     midiinputs = [rtmidi.MidiIn()]
     for idx, device in enumerate(midiinputs[0].get_ports()):
@@ -28,7 +28,7 @@ class PushRouter(Router):
   def handler(self, event, data=None):
     evt = event[0]
     (status, data1, data2) = evt
-    print self.name, evt
+    print(self.name, evt)
 
     if status == constants.STATUS_CH1:
       encoders.handle_push_turns(evt)
@@ -45,11 +45,7 @@ class PushRouter(Router):
     elif status == constants.PRESS_USER_BUTTON:
       graphics.handle_user_button_presses(evt)
 
-
-
-
-
-
+    # forward everything onward by default
     outpututils.thru(event[0])
 
   # note ons are either:
