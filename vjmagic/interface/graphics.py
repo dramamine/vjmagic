@@ -53,31 +53,3 @@ for i in range(0,4):
     __QUADRANTS__[i].tick()
     __QUADRANTS__[i].tick()
     __QUADRANTS__[i].tick()
-
-
-# class Graphics:
-#   def __init__(self, listener):
-#     # TODO
-#     self.listener = listener
-
-#     self.note_tracker = dict()
-#     self.notes_toggled_by_user = dict()
-
-
-#     # listeners for glowy buttons being pressed
-#     listener.add_listener([constants.MIDI_NOTE_ON, None, None],
-#       self.handle_note_in, False)
-
-#     # listeners for the "layer toggle buttons"
-#     # listener.add_listener([constants.PRESS_USER_BUTTON, constants.BUTTON_QUANTIZE, None],
-#     #   self.quadrants[0].unselect, False)
-#     # listener.add_listener([constants.PRESS_USER_BUTTON, constants.BUTTON_DOUBLE, None],
-#     #   self.quadrants[1].unselect, False)
-#     # listener.add_listener([constants.PRESS_USER_BUTTON, constants.BUTTON_DELETE, None],
-#     #   self.quadrants[2].unselect, False)
-#     # listener.add_listener([constants.PRESS_USER_BUTTON, constants.BUTTON_UNDO, None],
-#     #   self.quadrants[3].unselect, False)
-
-
-
-

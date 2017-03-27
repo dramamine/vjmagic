@@ -2,9 +2,7 @@
 from vjmagic import constants
 import rtmidi
 from vjmagic.routers.base import Router
-from vjmagic.interface import outpututils
-from vjmagic.interface import encoders
-from vjmagic.interface import graphics
+from vjmagic.interface import outpututils, encoders, graphics, encodercontroller
 
 class PushRouter(Router):
   encoder_controller = None
@@ -40,8 +38,9 @@ class PushRouter(Router):
     elif status == constants.MIDI_NOTE_ON:
       # TODO consider moving this function to resolume side
       graphics.handle_note_in(evt)
+      encodercontroller.check_for_category_change(evt)
       if data1 <= 10:
-        encoders.handle_push_touches(event)
+        encoders.handle_push_touches(evt)
         return
     elif status == constants.PRESS_USER_BUTTON:
       graphics.handle_user_button_presses(evt)

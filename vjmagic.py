@@ -19,21 +19,12 @@ from vjmagic.routers.resolumerouter import ResolumeRouter
 # http://stackoverflow.com/questions/230751/how-to-flush-output-of-python-print
 sys.stdout = os.fdopen(sys.stdout.fileno(), 'w', 0)
 
-# midiout = rtmidi.MidiOut()
-# midiinputs = [rtmidi.MidiIn()]
-
-def find_port_index(midi, str):
-  for idx, device in enumerate(midi.get_ports()):
-    if str in device.lower():
-      return idx
-  return -1
-
 # open any pushy inputs
-pel = PushEventListener()
+# pel = PushEventListener()
 
 
-#
-pel.load_output(outpututils)
+# #
+# pel.load_output(outpututils)
 
 # get those encoders happenin'
 # encoders = Encoders()
@@ -50,7 +41,12 @@ draft = [
     80, 81, 82, 83,
     88, 89, 90, 91,
     96, 97, 98, 99]],
-  ['BASIC', ['STR', 'MAG', 'INT', 'DEX', 'CON'], range(36,39)]
+  ['BASIC', ['STR', 'MAG', 'INT', 'DEX', 'CON'], [
+    36, 37, 38, 39,
+    44, 45, 46, 47,
+    52, 53, 54, 55,
+    60, 61, 62, 63
+  ]]
 ]
 encodercontroller.load_config(draft)
 
@@ -60,16 +56,16 @@ print "aol loaded"
 res = ResolumeRouter()
 print "res loaded"
 
-def words():
-  # ap.set_user_mode()
+# def words():
+#   # ap.set_user_mode()
 
-  # this clears out a line
-  # ap.clearDisplay()
+#   # this clears out a line
+#   # ap.clearDisplay()
 
-  outpututils.set_display_bytes(2, map(lambda x: int(x), range(68)))
-  outpututils.set_display_bytes(3, map(lambda x: int(x), range(69,127)))
+#   outpututils.set_display_bytes(2, map(lambda x: int(x), range(68)))
+#   outpututils.set_display_bytes(3, map(lambda x: int(x), range(69,127)))
 
-words()
+# words()
 
 # could also try: signal, SIGINT. not working that well with Windows + Python2
 try:
@@ -78,12 +74,3 @@ except KeyboardInterrupt:
   outpututils.clear_display()
   print "bye"
   sys.exit(0)
-
-
-
-
-
-# everything_off()
-# midiout.send_message(note_off)
-
-# del midiout
