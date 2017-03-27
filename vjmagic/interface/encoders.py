@@ -17,7 +17,7 @@ state.values = [0] * 9
 state.active_knobs = 8
 state.update_display = None
 state.labels = []
-state.display_mode = 'BASIC'
+state.display_mode = ''
 
 # update the value of an encoder
 #
@@ -40,7 +40,7 @@ def set_display_mode(mode, tolabels):
     outpututils.clear_display_line(3)
     state.update_display = update_display_basic
     state.labels = tolabels
-    print("switched")
+    print("switched. labels are now:", state.labels)
   elif mode == 'TOUCH':
     print("switching to touch display")
     # reset values bc it gets weird otherwise
@@ -124,8 +124,8 @@ def update_display_basic():
     state.labels + [''] * (8 - len(state.labels)) # pad to 8 with empty strings
   )
 
-# load this func on start
-state.update_display = update_display_basic
+# # load this func on start
+# state.update_display = update_display_basic
 
 # update the display using 'touch' mode
 def update_display_touchy():
