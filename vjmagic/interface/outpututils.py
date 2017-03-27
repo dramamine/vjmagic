@@ -51,7 +51,7 @@ def set_display_line(line, str):
 def set_display_bytes(line, bytes):
   # pad to 68
   while len(bytes) < 68:
-    bytes.append(30)
+    bytes.append(32)
   msg = SYSEX_START + [(24 + line), 0, 69, 0] + bytes + SYSEX_TERM
   midiout.send_message(msg)
 

@@ -1,5 +1,6 @@
 from vjmagic import constants
 from vjmagic.interface import outpututils
+import math, itertools
 
 class Stuff:
   pass
@@ -107,18 +108,30 @@ def handle_resolume_updates(event):
 
 ## update the display using 'basic' mode
 def update_display_basic():
-  # print "update display basic called"
-  val_strings = map(lambda x: str(x).center(8), state.values[:state.active_knobs])
-  # annoying spacing
-  outstr = ''
-  ctr = 0
-  for val_string in val_strings:
-    outstr = outstr + val_string
-    if ctr % 2 == 0:
-      outstr = outstr + " "
-    ctr = ctr + 1
 
-  outpututils.set_display_line(0, outstr)
+  # val_bytes =
+  encoders = map(encoder_text_to_bytes, state.values[:state.active_knobs])
+  chained = list(itertools.chain.from_iterable(encoders))
+  # sorry. adding blank spaces since width is 68, not 64
+
+  for width in [56, 40, 24, 8]:
+    if len(chained) > width:
+      print("adding blank here:", width)
+      chained[width:width] = [constants.TEXT_BLANK]
+
+  print("chained:", chained)
+
+  outpututils.set_display_bytes(0, chained)
+  # annoying spacing
+  # outstr = ''
+  # ctr = 0
+  # for val_string in val_strings:
+  #   outstr = outstr + val_string
+  #   if ctr % 2 == 0:
+  #     outstr = outstr + " "
+  #   ctr = ctr + 1
+
+  # outpututils.set_display_line(0, outstr)
 
   # labels
   outpututils.set_display_cells(1,
@@ -135,3 +148,20 @@ def update_display_touchy():
   outpututils.set_display_cells(1, val_cells)
   outpututils.set_display_cells(2, val_cells)
   outpututils.set_display_cells(3, val_cells)
+
+def encoder_text_to_bytes(x):
+  print("encoder_text_to_bytes", x)
+  # convert 128 to 16 levels.
+  # adding 1 here allows both "all no" and "all solid" bars.
+  level = int(round((1 + x) / 8))
+  fullbars = int(math.floor(level / 2))
+
+  bars = [constants.TEXT_SOLID_BARS] * fullbars
+  mid_bars = level % 2
+  print("lvl n fullbars:", level, fullbars, mid_bars)
+  if mid_bars == 1:
+    bars = bars + [constants.TEXT_MID_BARS]
+
+  bars = bars + [constants.TEXT_NO_BARS] * (8 - len(bars))
+  print(bars)
+  return bars

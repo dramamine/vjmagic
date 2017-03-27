@@ -41,16 +41,15 @@ print("push loaded.")
 res = ResolumeRouter()
 print("resolume loaded.")
 
-# def words():
-#   # ap.set_user_mode()
+# intro display
+def words():
+  outpututils.clear_display()
 
-#   # this clears out a line
-#   # ap.clearDisplay()
+  outpututils.set_display_line(0, '                       WELCAME TO HYPNODROME')
+  outpututils.set_display_bytes(2, map(lambda x: int(x), range(68)))
+  outpututils.set_display_bytes(3, map(lambda x: int(x), range(69,127)))
 
-#   outpututils.set_display_bytes(2, map(lambda x: int(x), range(68)))
-#   outpututils.set_display_bytes(3, map(lambda x: int(x), range(69,127)))
-
-# words()
+words()
 
 # could also try: signal, SIGINT. not working that well with Windows + Python2
 try:
