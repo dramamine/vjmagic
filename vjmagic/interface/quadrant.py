@@ -19,6 +19,9 @@ class Quadrant:
     # color them initially
     apply_color(palette[0], self.quadrant)
 
+  def update_palette(self, palette):
+    self.palette = palette
+
   def tick(self):
     if not self.stack:
       self.palette_iterator = self.palette_iterator + 1 if self.palette_iterator + 1 < len(self.palette) else 0
@@ -43,7 +46,7 @@ class Quadrant:
     # actually color the damn thing
     apply_color(self.selected, [thing])
 
-  def unselect(self, event):
+  def unselect(self):
     if self.exception >= 0:
       apply_color(self.palette[0], [self.exception])
     outpututils.unlight_user_button(self.toggler)
@@ -75,4 +78,3 @@ def coords_to_quadrant(coord_a, coord_b):
     ))
 
   return list(itertools.chain.from_iterable(ranges))
-

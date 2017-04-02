@@ -5,7 +5,6 @@ import math, itertools
 class Stuff:
   pass
 
-
 ENCODERS = [71, 72, 73, 74, 75, 76, 77, 78, 79]
 
 INCREMENT = 1
@@ -41,18 +40,20 @@ def set_display_mode(mode, tolabels, active):
     outpututils.clear_display_line(2)
     outpututils.clear_display_line(3)
     state.update_display = update_display_basic
-    state.labels = tolabels
     print("switched. labels are now:", state.labels)
   elif mode == 'TOUCH':
     print("switching to touch display")
     # reset values bc it gets weird otherwise
     state.touched = [False] * 9
     state.update_display = update_display_touchy
+  elif mode == 'CLIPS':
+    state.update_display = update_display_clips
   else:
     print("WTF wrong mode y'all")
     return "WTF"
 
   state.display_mode = mode
+  state.labels = tolabels
   # clear before we do anything...
   outpututils.clear_display()
   state.update_display()
@@ -61,11 +62,6 @@ def set_display_mode(mode, tolabels, active):
 def handle_push_turns(event):
   (status, data1, data2) = event
   print("ok push turns is handled.", event)
-  try:
-    encoder = ENCODERS.index(data1)
-  except ValueError:
-    return None
-
   # splitting between increments and decrements
   if data2 < 64:
     new_cc = min(127, state.values[encoder] + (SENSITIVITY * data2) )
@@ -148,6 +144,14 @@ def update_display_touchy():
   outpututils.set_display_cells(1, val_cells)
   outpututils.set_display_cells(2, val_cells)
   outpututils.set_display_cells(3, val_cells)
+
+# update the display using 'clips' mode
+# just add some labels... no interactions.
+def update_display_clips():
+  # labels
+  outpututils.set_display_cells(0,
+    state.labels + [''] * (8 - len(state.labels)) # pad to 8 with empty strings
+  )
 
 def encoder_text_to_bytes(x):
   print("encoder_text_to_bytes", x)

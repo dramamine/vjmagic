@@ -31,25 +31,24 @@ class PushRouter(Router):
     print(self.name, evt)
 
     if status == constants.STATUS_CH1:
-      encoders.handle_push_turns(evt)
-      if data1 == constants.GRAPHICS_KNOB:
+      if data in encoders.ENCODERS:
+          encoders.handle_push_turns(evt)
+          return
+      elif data1 == constants.GRAPHICS_KNOB:
         graphics.handle_push_turns(evt)
-      return
+        return
+      elif data1 in constants.LAYER_TOGGLE_BUTTONS:
+        graphics.handle_user_button_presses(evt)
+      # else, it's prob some other user button...
+      # in that case, forward on to Res.
     elif status == constants.MIDI_NOTE_ON:
       # TODO consider moving this function to resolume side
       graphics.handle_note_in(evt)
-      encodercontroller.check_for_category_change(evt)
+      res = encodercontroller.check_for_category_change(evt)
       if data1 <= 10:
         encoders.handle_push_touches(evt)
-        return
     elif status == constants.PRESS_USER_BUTTON:
       graphics.handle_user_button_presses(evt)
 
     # forward everything onward by default
     outpututils.thru(event[0])
-
-  # note ons are either:
-  # - pressing colored buttons. route these through to Resolume
-  # - touching knobs. send these to our encoders model
-  def handle_note_ons(self, event, data=None):
-    (status, data1, data2) = event

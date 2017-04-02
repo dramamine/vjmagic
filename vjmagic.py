@@ -31,6 +31,16 @@ draft = [{
     52, 53, 54, 55,
     60, 61, 62, 63
   ]
+}, {
+  'mode': 'CLIPS',
+  'active': 6,
+  'labels': ['intro', 'verse', 'chorus', 'bridge', 'break', 'outro'],
+  'keys': [
+    40, 41, 42, 43,
+    48, 49, 50, 51,
+    56, 57, 58, 59,
+    64, 65, 66, 67
+  ]
 }]
 
 encodercontroller.load_config(draft)

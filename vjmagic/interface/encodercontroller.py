@@ -24,8 +24,4 @@ def check_for_category_change(event):
         return encoders.set_display_mode(mode, labels, active)
     except ValueError:
       pass
-
-  # print "reverting to default config"
-  return encoders.set_display_mode('BASIC',
-    ['STR', 'MAG', 'INT', 'DEX', 'CON']
-  )
+  
