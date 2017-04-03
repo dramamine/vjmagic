@@ -56,8 +56,8 @@ def set_display_bytes(line, bytes):
   midiout.send_message(msg)
 
 def clear_display():
-  # TODO map
-  for i in range(0,3):
+  # clearing 4 lines.. range ain't inclusive?
+  for i in range(0,4):
     clear_display_line(i)
 
 # true for user mode, false for live mode

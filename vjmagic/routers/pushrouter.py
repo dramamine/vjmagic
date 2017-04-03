@@ -32,7 +32,6 @@ class PushRouter(Router):
 
     if status == constants.STATUS_CH1:
       if data1 in constants.ENCODERS:
-          print("data1 WAS in encoders", data1, constants.ENCODERS)
           encoders.handle_push_turns(evt)
           return
       elif data1 == constants.GRAPHICS_KNOB:
@@ -41,7 +40,6 @@ class PushRouter(Router):
       elif data1 in constants.LAYER_TOGGLE_BUTTONS:
         graphics.handle_user_button_presses(evt)
       elif data1 in constants.USER_BUTTONS_ROUTED_TO_CH3:
-        print("routed to ch3!")
         outpututils.thru([constants.STATUS_CH3, data1, data2])
         return
       # else, it's prob some other user button...
@@ -54,17 +52,18 @@ class PushRouter(Router):
       if data1 <= 10:
         # these are definitely knob touches...
         # always eat these unless we're in 'touch' mode
-        if (encoders.get_display_mode() != "TOUCH"):
-          print("not gonna route that.")
+        # if (encoders.get_display_mode() != "TOUCH"):
+        #   print("not gonna route that.")
+        #   return
+        if encoders.handle_push_touches(evt):
           return
-        encoders.handle_push_touches(evt)
         # for some cases we want to route these differently...
-        if encoders.reroute_push_touches(evt):
-          return
+        # if encoders.reroute_push_touches(evt):
+        #   return
     elif status == constants.PRESS_USER_BUTTON:
       graphics.handle_user_button_presses(evt)
       # mapping some user buttons to Ch 3, for fun
 
     # forward everything onward by default
-    print("getting routed.")
+    # print("getting routed.")
     outpututils.thru(event[0])

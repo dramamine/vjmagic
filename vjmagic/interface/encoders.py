@@ -31,7 +31,7 @@ def get_display_mode():
   return state.display_mode
 
 def set_display_mode(mode, tolabels, active):
-  print("set_display_mode called", mode, tolabels, active)
+  # print("set_display_mode called", mode, tolabels, active)
   state.active_knobs = active
   if mode == state.display_mode:
     return
@@ -39,13 +39,13 @@ def set_display_mode(mode, tolabels, active):
     print(mode, "was not", state.display_mode)
 
   if mode == 'BASIC':
-    print("switching to basic display")
+    # print("switching to basic display")
     outpututils.clear_display_line(2)
     outpututils.clear_display_line(3)
     state.update_display = update_display_basic
     print("switched. labels are now:", state.labels)
   elif mode == 'TOUCH':
-    print("switching to touch display")
+    # print("switching to touch display")
     # reset values bc it gets weird otherwise
     state.touched = [False] * 9
     state.update_display = update_display_touchy
@@ -69,14 +69,14 @@ def handle_push_turns(event):
   except ValueError:
     print("Expected ENCODERS to have this value:", data1)
     return
-  print("ok push turns is handled.", event, state.values, encoder_idx)
+  # print("ok push turns is handled.", event, state.values, encoder_idx)
   # splitting between increments and decrements
   if data2 < 64:
     new_cc = min(127, state.values[encoder_idx] + (SENSITIVITY * data2) )
   else:
     new_cc = max(0, state.values[encoder_idx] - (SENSITIVITY * (128 - data2) ) )
 
-  print("updating encoder to ", new_cc, "on event:", event)
+  # print("updating encoder to ", new_cc, "on event:", event)
   # relay the new value from ch1 to ch2
   outpututils.thru([constants.STATUS_CH2, data1, new_cc])
 
@@ -88,40 +88,53 @@ def handle_push_turns(event):
 # ex. (144, 0, 127) means the first knob was touched
 # ex. (144, 0, 0) means the first knob was untouched
 def handle_push_touches(event):
-
   (status, data1, data2) = event
   if (data1 > 8):
-    return
+    return False
   state.touched[data1] = bool(data2)
-  print("touched:", event)
+  # print("touched:", event)
   state.update_display()
+  reroute_push_touches(event)
 
 def save_active_clip(event):
   (status, data1, data2) = event
   if data1 >= 36 and data1 <= 99:
-    print("new active:", data1)
+    # print("new active:", data1)
     state.active_clip = data1
 
 def load_router(keys, data):
   state.router_keys = keys
   state.router_data = data
 
+# depending on the display mode, sometimes we want to
+# handle touches differently. this helps with complex
+# mappings in Resolume.
+# return True if we should eat the output
 def reroute_push_touches(event):
-  print("checking router", event, state.router_keys)
+  if state.display_mode == 'TOUCH':
+    return timeline_routing(event)
+  elif state.display_mode == 'CLIPS':
+    return cuepoints_routing(event)
+  return False
+
+# came up with some fancy effects involving the Left-Right
+# arrows on Timeline view. unfortunately, it's hard to
+# specifically map them due to the way mapping works inside
+# a clip. this crunches some numbers and sends them to the
+# third channel on some "user buttons" values.
+# return True if we should eat the output
+def timeline_routing(event):
   (status, data1, data2) = event
   try:
     key_index = state.router_keys.index(state.active_clip)
   except ValueError:
     return False
-  print("using key index:", key_index)
   # 'columns' in Resolume are 1-indexed.
   column_index = key_index + 1
   for conversion in state.router_data:
-    print("checking all this", conversion, column_index, data1)
     if conversion['column'] == column_index and \
     data1 in conversion['conversions']:
       data1_converted = conversion['conversions'][data1]
-      print("yeah! converted", data1_converted)
 
       # also convert data2.
       # * change 127s to 1s (so it'll be "Right" instead of "Random")
@@ -141,6 +154,13 @@ def reroute_push_touches(event):
   print("converted to:", new_evt)
   outpututils.thru(new_evt)
 
+# routing specific to being in 'clips' mode (i.e. video clips, no effects)
+# routing these to channel 4, just to avoid interference.
+# return True if we should eat the output
+def cuepoints_routing(event):
+  (status, data1, data2) = event
+  outpututils.thru([constants.STATUS_CH4, data1, data2])
+  return False
 
 # handle an event coming from resolume
 def handle_resolume_updates(event):
