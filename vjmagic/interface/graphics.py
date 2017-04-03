@@ -48,7 +48,7 @@ def handle_user_button_presses(evt):
   except ValueError:
     pass
 
-# fucking TODO. this will be fun
+# update palettes
 def handle_push_turns(evt):
   global palette_index
   (status, data1, data2) = evt

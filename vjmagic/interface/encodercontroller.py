@@ -9,6 +9,10 @@ def load_config(myconfig):
 
 def check_for_category_change(event):
   (status, data1, data2) = event
+  print("cat change:", event)
+  # don't trust these... ex. resolume sends some crap.
+  if data2 == 0:
+    return
   # we only want to look at the encoders we're tracking, ya know?
   # the 8x8 grid covers 36 to 99
   if data1 < 36 or data1 > 99:
@@ -24,4 +28,3 @@ def check_for_category_change(event):
         return encoders.set_display_mode(mode, labels, active)
     except ValueError:
       pass
-  

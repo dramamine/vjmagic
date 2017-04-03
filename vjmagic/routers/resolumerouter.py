@@ -40,7 +40,8 @@ class ResolumeRouter(Router):
     if status == constants.STATUS_CH2:
       encoders.handle_resolume_updates(evt)
     elif status == constants.STATUS_CH1:
-      encoders.handle_push_turns(evt)
+      if data1 in constants.ENCODERS:
+        encoders.handle_push_turns(evt)
     elif status == constants.MIDI_NOTE_ON:
       # Resolume was misreporting knobs being touched... I did not like
       # encoders.handle_push_touches(evt)

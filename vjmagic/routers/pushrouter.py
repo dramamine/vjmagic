@@ -31,7 +31,8 @@ class PushRouter(Router):
     print(self.name, evt)
 
     if status == constants.STATUS_CH1:
-      if data in encoders.ENCODERS:
+      if data1 in constants.ENCODERS:
+          print("data1 WAS in encoders", data1, constants.ENCODERS)
           encoders.handle_push_turns(evt)
           return
       elif data1 == constants.GRAPHICS_KNOB:
@@ -44,11 +45,21 @@ class PushRouter(Router):
     elif status == constants.MIDI_NOTE_ON:
       # TODO consider moving this function to resolume side
       graphics.handle_note_in(evt)
-      res = encodercontroller.check_for_category_change(evt)
+      encodercontroller.check_for_category_change(evt)
+      encoders.save_active_clip(evt)
       if data1 <= 10:
+        # these are definitely knob touches...
+        # always eat these unless we're in 'touch' mode
+        if (encoders.get_display_mode() != "TOUCH"):
+          print("not gonna route that.")
+          return
         encoders.handle_push_touches(evt)
+        # for some cases we want to route these differently...
+        if encoders.reroute_push_touches(evt):
+          return
     elif status == constants.PRESS_USER_BUTTON:
       graphics.handle_user_button_presses(evt)
 
     # forward everything onward by default
+    print("getting routed.")
     outpututils.thru(event[0])
