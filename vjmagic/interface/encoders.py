@@ -131,10 +131,16 @@ def reroute_push_touches(event):
       if data1_converted % 2 == 0:
         # 0 <=> 40
         data2_converted = abs(data2_converted - 40)
-      new_evt = [constants.PRESS_USER_BUTTON, data1_converted, data2_converted]
+      new_evt = [constants.STATUS_CH3, data1_converted, data2_converted]
       print("converted to:", new_evt)
       outpututils.thru(new_evt)
       return True
+  # else, didn't really get what we wanted...
+  # but let's route it to those dashboard knobs.
+  new_evt = [constants.STATUS_CH2, 71 + data1, data2]
+  print("converted to:", new_evt)
+  outpututils.thru(new_evt)
+
 
 # handle an event coming from resolume
 def handle_resolume_updates(event):

@@ -40,6 +40,10 @@ class PushRouter(Router):
         return
       elif data1 in constants.LAYER_TOGGLE_BUTTONS:
         graphics.handle_user_button_presses(evt)
+      elif data1 in constants.USER_BUTTONS_ROUTED_TO_CH3:
+        print("routed to ch3!")
+        outpututils.thru([constants.STATUS_CH3, data1, data2])
+        return
       # else, it's prob some other user button...
       # in that case, forward on to Res.
     elif status == constants.MIDI_NOTE_ON:
@@ -59,6 +63,7 @@ class PushRouter(Router):
           return
     elif status == constants.PRESS_USER_BUTTON:
       graphics.handle_user_button_presses(evt)
+      # mapping some user buttons to Ch 3, for fun
 
     # forward everything onward by default
     print("getting routed.")

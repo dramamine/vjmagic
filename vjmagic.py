@@ -32,6 +32,16 @@ draft = [{
     60, 61, 62, 63
   ]
 }, {
+  'mode': 'BASIC',
+  'active': 6,
+  'labels': ['STR', 'MAG', 'INT', 'DEX', 'CON', 'LCK'],
+  'keys': [
+    68, 69, 70, 71,
+    76, 77, 78, 79,
+    84, 85, 86, 87,
+    92, 93, 94, 95
+  ]
+}, {
   'mode': 'CLIPS',
   'active': 6,
   'labels': ['intro', 'verse', 'chorus', 'bridge', 'break', 'outro'],
