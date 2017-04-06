@@ -53,30 +53,6 @@ draft = [{
   ]
 }]
 
-timeline_conversions = [
-{
-  'name': 'Tryptafx Kaleido',
-  'column': 1,
-  'conversions': {
-    # 0: 114,
-    # 1: 115,
-    # 2: 112,
-    # 3: 113,
-    # 4: 110,
-    # 5: 111
-  }
-}
-]
-
-# 'keys' here is used by router, ex. column 1 conversions are
-# applied to keys[0].
-encoders.load_router([
-  72, 73, 74, 75,
-  80, 81, 82, 83,
-  88, 89, 90, 91,
-  96, 97, 98, 99
-], timeline_conversions)
-
 encodercontroller.load_config(draft)
 
 aol = PushRouter()

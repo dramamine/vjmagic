@@ -125,32 +125,7 @@ def reroute_push_touches(event):
 # return True if we should eat the output
 def timeline_routing(event):
   (status, data1, data2) = event
-  try:
-    key_index = state.router_keys.index(state.active_clip)
-  except ValueError:
-    return False
-  # 'columns' in Resolume are 1-indexed.
-  column_index = key_index + 1
-  for conversion in state.router_data:
-    if conversion['column'] == column_index and \
-    data1 in conversion['conversions']:
-      data1_converted = conversion['conversions'][data1]
-
-      # also convert data2.
-      # * change 127s to 1s (so it'll be "Right" instead of "Random")
-      # * invert even-numbered ones (so, ex. Right is higlighted;
-      #   toggle on goes to Left, toggle off goes to Right)
-      data2_converted = min(40, data2)
-      if data1_converted % 2 == 0:
-        # 0 <=> 40
-        data2_converted = abs(data2_converted - 40)
-      new_evt = [constants.STATUS_CH3, data1_converted, data2_converted]
-      print("converted to:", new_evt)
-      outpututils.thru(new_evt)
-      return True
-  # else, didn't really get what we wanted...
-  # but let's route it to those dashboard knobs.
-  new_evt = [constants.STATUS_CH2, 71 + data1, data2]
+  new_evt = [constants.MIDI_NOTE_ON2, data1, data2]
   print("converted to:", new_evt)
   outpututils.thru(new_evt)
 
