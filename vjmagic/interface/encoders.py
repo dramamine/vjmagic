@@ -94,7 +94,7 @@ def handle_push_touches(event):
   state.touched[data1] = bool(data2)
   # print("touched:", event)
   state.update_display()
-  reroute_push_touches(event)
+  return reroute_push_touches(event)
 
 def save_active_clip(event):
   (status, data1, data2) = event
@@ -115,6 +115,9 @@ def reroute_push_touches(event):
     return timeline_routing(event)
   elif state.display_mode == 'CLIPS':
     return cuepoints_routing(event)
+  elif state.display_mode == 'BASIC':
+    print('encoders.py: eating this touch')
+    return True
   return False
 
 # came up with some fancy effects involving the Left-Right
@@ -214,5 +217,4 @@ def encoder_text_to_bytes(x):
     bars = bars + [constants.TEXT_MID_BARS]
 
   bars = bars + [constants.TEXT_NO_BARS] * (8 - len(bars))
-  print(bars)
   return bars
