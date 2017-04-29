@@ -181,7 +181,7 @@ def update_display_basic():
 
   outpututils.clear_display_line(2)
 
-  outpututils.set_display_line(3, state.name)
+  outpututils.set_display_line(3, state.display_name)
 
 
 # # load this func on start
@@ -189,11 +189,16 @@ def update_display_basic():
 
 # update the display using 'touch' mode
 def update_display_touchy():
+  val_labels = map(lambda x, y: 'x'*8 if x else y, state.touched[:state.active_knobs], state.labels)
+  outpututils.set_display_cells(0, val_labels)
+
   val_cells = map(lambda x: 'x'*8 if x else ' '*8, state.touched[:state.active_knobs])
-  outpututils.set_display_cells(0, val_cells)
   outpututils.set_display_cells(1, val_cells)
   outpututils.set_display_cells(2, val_cells)
-  outpututils.set_display_cells(3, val_cells)
+
+  to_line = outpututils.cells_to_line(val_cells)
+  with_name = state.display_name + to_line[len(state.display_name):len(to_line)]
+  outpututils.set_display_line(3, with_name)
 
 # update the display using 'clips' mode
 # just add some labels... no interactions.
@@ -202,6 +207,7 @@ def update_display_clips():
   outpututils.set_display_cells(0,
     state.labels + [''] * (8 - len(state.labels)) # pad to 8 with empty strings
   )
+  outpututils.set_display_line(3, state.display_name)
 
 def encoder_text_to_bytes(x):
   # convert 128 to 16 levels.

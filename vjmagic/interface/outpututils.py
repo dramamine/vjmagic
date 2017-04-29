@@ -33,7 +33,7 @@ def clear_display_line(line):
   msg = SYSEX_START + [idx, 0, 0] + SYSEX_TERM
   midiout.send_message(msg)
 
-def set_display_cells(line, cells):
+def cells_to_line(cells):
   val_strings = map(lambda x: str(x).center(8), cells[:8])
   # annoying spacing
   outstr = ''
@@ -43,7 +43,10 @@ def set_display_cells(line, cells):
     if ctr % 2 == 0:
       outstr = outstr + " "
     ctr = ctr + 1
-  set_display_line(line, outstr)
+  return outstr
+
+def set_display_cells(line, cells):
+  set_display_line(line, cells_to_line(cells))
 
 def set_display_line(line, str):
   set_display_bytes(line, get_bytes(str))
