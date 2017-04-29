@@ -47,7 +47,8 @@ class PushRouter(Router):
     elif status == constants.MIDI_NOTE_ON:
       # TODO consider moving this function to resolume side
       graphics.handle_note_in(evt)
-      encodercontroller.check_for_category_change(evt)
+      # print("yep checking for cagt change.", data1)
+      # encodercontroller.check_for_category_change(evt)
       encoders.save_active_clip(evt)
       if data1 <= 10:
         # these are definitely knob touches...
@@ -56,6 +57,7 @@ class PushRouter(Router):
         #   print("not gonna route that.")
         #   return
         if encoders.handle_push_touches(evt):
+          print("not gonna route that.")
           return
         # for some cases we want to route these differently...
         # if encoders.reroute_push_touches(evt):

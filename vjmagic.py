@@ -6,6 +6,7 @@ import sys, os
 from vjmagic.interface import encodercontroller, encoders, graphics, outpututils
 from vjmagic.routers.pushrouter import PushRouter
 from vjmagic.routers.resolumerouter import ResolumeRouter
+from vjmagic.config.hypnodrome import config
 
 # always flush stdout
 # http://stackoverflow.com/questions/230751/how-to-flush-output-of-python-print
@@ -22,9 +23,9 @@ draft = [{
     96, 97, 98, 99
   ]
 }, {
-  'mode': 'BASIC',
-  'active': 5,
-  'labels': ['STR', 'MAG', 'INT', 'DEX', 'CON'],
+  'mode': 'CLIPS',
+  'active': 6,
+  'labels': ['intro', 'verse', 'chorus', 'bridge', 'break', 'outro'],
   'keys': [
     36, 37, 38, 39,
     44, 45, 46, 47,
@@ -53,7 +54,7 @@ draft = [{
   ]
 }]
 
-encodercontroller.load_config(draft)
+encodercontroller.load_config(config)
 
 aol = PushRouter()
 print("push loaded.")

@@ -19,6 +19,7 @@ state.active_clip = 0
 state.update_display = None
 state.labels = []
 state.display_mode = ''
+state.display_name = ''
 
 # update the value of an encoder
 #
@@ -30,20 +31,17 @@ def update_value(encoder, value):
 def get_display_mode():
   return state.display_mode
 
-def set_display_mode(mode, tolabels, active):
-  # print("set_display_mode called", mode, tolabels, active)
+def set_display_mode(mode, tolabels, active, name = ''):
+  print("set_display_mode called", mode, tolabels, active)
   state.active_knobs = active
-  if mode == state.display_mode:
+  if mode == state.display_mode and tolabels == state.labels:
     return
   else:
     print(mode, "was not", state.display_mode)
 
   if mode == 'BASIC':
     # print("switching to basic display")
-    outpututils.clear_display_line(2)
-    outpututils.clear_display_line(3)
     state.update_display = update_display_basic
-    print("switched. labels are now:", state.labels)
   elif mode == 'TOUCH':
     # print("switching to touch display")
     # reset values bc it gets weird otherwise
@@ -57,6 +55,7 @@ def set_display_mode(mode, tolabels, active):
 
   state.display_mode = mode
   state.labels = tolabels
+  state.display_name = name
   # clear before we do anything...
   outpututils.clear_display()
   state.update_display()
@@ -137,7 +136,11 @@ def timeline_routing(event):
 # return True if we should eat the output
 def cuepoints_routing(event):
   (status, data1, data2) = event
-  outpututils.thru([constants.STATUS_CH4, data1, data2])
+  # if data2 == 0:
+  #   return True
+  out = [constants.MIDI_NOTE_ON4, data1, data2]
+  print("converting to:", out)
+  outpututils.thru(out)
   return False
 
 # handle an event coming from resolume
@@ -170,21 +173,16 @@ def update_display_basic():
   # print("chained:", chained)
 
   outpututils.set_display_bytes(0, chained)
-  # annoying spacing
-  # outstr = ''
-  # ctr = 0
-  # for val_string in val_strings:
-  #   outstr = outstr + val_string
-  #   if ctr % 2 == 0:
-  #     outstr = outstr + " "
-  #   ctr = ctr + 1
-
-  # outpututils.set_display_line(0, outstr)
-
+  print("printing labels:", state.labels)
   # labels
   outpututils.set_display_cells(1,
     state.labels + [''] * (8 - len(state.labels)) # pad to 8 with empty strings
   )
+
+  outpututils.clear_display_line(2)
+
+  outpututils.set_display_line(3, state.name)
+
 
 # # load this func on start
 # state.update_display = update_display_basic
