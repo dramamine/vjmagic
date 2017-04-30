@@ -8,16 +8,15 @@ class Quadrant:
   palette_iterator = 0
   stack = []
 
-  def __init__(self, palette, toggler, selected, coord_a, coord_b):
+  def __init__(self, palette, palette_id, toggler, selected, keys):
     self.palette = palette
+    self.palette_id = palette_id
     self.selected = selected
     self.toggler = toggler
-
-    # list of all notes in this quadrant
-    self.quadrant = coords_to_quadrant(coord_a, coord_b)
+    self.keys = keys
 
     # color them initially
-    apply_color(palette[0], self.quadrant)
+    apply_color(palette[0], keys)
 
   def update_palette(self, palette):
     self.palette = palette
@@ -25,7 +24,7 @@ class Quadrant:
   def tick(self):
     if not self.stack:
       self.palette_iterator = self.palette_iterator + 1 if self.palette_iterator + 1 < len(self.palette) else 0
-      self.stack = list(self.quadrant)
+      self.stack = list(self.keys)
       shuffle(self.stack)
 
     chips = self.stack.pop()
@@ -53,8 +52,14 @@ class Quadrant:
     self.exception = -1
 
   def check_note(self, note):
-    if note in self.quadrant:
+    if note in self.keys:
       self.toggle(note)
+
+  # consider unselecting this layer. (selection is handled elsewhere)
+  def check_user_button(self, key):
+    print('checking user button:', self.toggler, key)
+    if self.toggler == key:
+      self.unselect()
 
 def apply_color(color, buttons):
   for note in buttons:

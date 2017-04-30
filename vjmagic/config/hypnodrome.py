@@ -1,7 +1,11 @@
-
+from vjmagic import constants
 config = [{
   'mode': 'BASIC',
   'active': 6,
+  'quadrant': 2,
+  'palette': 1,
+  'killer': constants.BUTTON_DELETE,
+  'kill_other_layer_on_select': 3,
   'labels': ['STR', 'MAG', 'INT', 'DEX', 'CON', 'LCK'],
   'keys': [
     68, 69, 70, 71,
@@ -21,6 +25,10 @@ config = [{
 }, {
   'mode': 'TOUCH',
   'active': 8,
+  'quadrant': 3,
+  'palette': 2,
+  'killer': constants.BUTTON_UNDO,
+  'kill_other_layer_on_select': 2,
   'keys': [
     72, 73, 74, 75,
     80, 81, 82, 83,
@@ -43,6 +51,10 @@ config = [{
 }, {
   'mode': 'CLIPS',
   'active': 6,
+  'quadrant': 0,
+  'palette': 0,
+  'killer': constants.BUTTON_QUANTIZE,
+  'kill_other_layer_on_select': 1,
   'labels': ['intro', 'verse', 'chorus', 'bridge', 'break', 'outro'],
   'keys': [
     36, 37, 38, 39,
@@ -53,6 +65,10 @@ config = [{
 }, {
   'mode': 'CLIPS',
   'active': 6,
+  'quadrant': 1,
+  'palette': 0,
+  'killer': constants.BUTTON_DOUBLE,
+  'kill_other_layer_on_select': 0,
   'labels': ['intro', 'verse', 'chorus', 'bridge', 'break', 'outro'],
   'keys': [
     40, 41, 42, 43,

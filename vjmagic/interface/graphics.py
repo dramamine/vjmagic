@@ -19,16 +19,24 @@ __PALETTES__ = [
   [[56, 57], [60, 61], [41, 45], constants.COLOR_GREEN]
 ]
 
+__NEW_PALETTES__ = [
+  blues,
+  dark_blues,
+  oranges,
+  [23, 24],
+  [46, 47],
+  [98, 99]
+]
+
 palette_index = 0
 
 # 2 3
 # 0 1
-__QUADRANTS__ = [
-  Quadrant(dark_blues, constants.BUTTON_QUANTIZE, selected,  (0,0), (3,3)),
-  Quadrant(blues, constants.BUTTON_DOUBLE, selected, (4,0), (7,3)),
-  Quadrant(blues, constants.BUTTON_DELETE, selected, (0,4), (3,7)),
-  Quadrant(oranges, constants.BUTTON_UNDO, selected, (4,4), (7,7)),
-]
+__QUADRANTS__ = []
+
+def load_quadrant(palette, killer, keys, **kwargs):
+  print('load_quadrant called.', palette, killer)
+  __QUADRANTS__.append( Quadrant(__NEW_PALETTES__[palette], palette, killer, selected, keys) )
 
 
 def loop():
@@ -37,16 +45,12 @@ def loop():
 def tick_all():
   map(lambda q: q.tick(), __QUADRANTS__)
 
-def handle_note_in(event):
-  map(lambda q: q.check_note(event[1]), __QUADRANTS__)
+def handle_note_in(evt):
+  map(lambda q: q.check_note(evt[1]), __QUADRANTS__)
 
+# check data1 and see if it matches our toggler.
 def handle_user_button_presses(evt):
-  (status, data1, data2) = evt
-  try:
-    quad = constants.LAYER_TOGGLE_BUTTONS.index(data1)
-    __QUADRANTS__[quad].unselect()
-  except ValueError:
-    pass
+  map(lambda q: q.check_user_button(evt[1]), __QUADRANTS__)
 
 # update palettes
 def handle_push_turns(evt):
@@ -54,19 +58,18 @@ def handle_push_turns(evt):
   (status, data1, data2) = evt
   print("graphics push turn:", evt)
   # increment for now
-  palette_index = (palette_index + 1) % len(__PALETTES__)
+  palette_index = (palette_index + 1) % len(__NEW_PALETTES__)
   print("idx:")
+  for q in __QUADRANTS__:
+    updated_idx = (q.palette_id + palette_index) % len(__NEW_PALETTES__)
+    q.update_palette(__NEW_PALETTES__[updated_idx])
 
-  # basically hardcoded to 4 quadrants.. :shrug:
-  __QUADRANTS__[0].update_palette( __PALETTES__[palette_index][0] )
-  __QUADRANTS__[1].update_palette( __PALETTES__[palette_index][1] )
-  __QUADRANTS__[2].update_palette( __PALETTES__[palette_index][1] )
-  __QUADRANTS__[3].update_palette( __PALETTES__[palette_index][2] )
-
-# start in a fun pattern. each quadrant is 4 cells ahead of the last.
-for i in range(0,4):
-  for _ in range(0, i):
-    __QUADRANTS__[i].tick()
-    __QUADRANTS__[i].tick()
-    __QUADRANTS__[i].tick()
-    __QUADRANTS__[i].tick()
+def start():
+    # start in a fun pattern. each quadrant is 4 cells ahead of the last.
+    for i in range(0, len(__QUADRANTS__)):
+      for _ in range(0, i):
+        for _ in range(4):
+          __QUADRANTS__[i].tick()
+        # __QUADRANTS__[i].tick()
+        # __QUADRANTS__[i].tick()
+        # __QUADRANTS__[i].tick()
