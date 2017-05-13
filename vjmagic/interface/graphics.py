@@ -20,12 +20,13 @@ __PALETTES__ = [
 ]
 
 __NEW_PALETTES__ = [
+  [73, 74], # yelloes
   blues,
-  dark_blues,
   oranges,
-  [23, 24],
-  [46, 47],
-  [98, 99]
+  [23, 24], # greens
+  [98, 99], # yellow/orange,
+  [72, 6], # red/orange, meh
+  [49, 53], # purples
 ]
 
 palette_index = 0
@@ -34,9 +35,9 @@ palette_index = 0
 # 0 1
 __QUADRANTS__ = []
 
-def load_quadrant(palette, killer, keys, **kwargs):
-  print('load_quadrant called.', palette, killer)
-  __QUADRANTS__.append( Quadrant(__NEW_PALETTES__[palette], palette, killer, selected, keys) )
+def load_quadrant(palette, killer, kill_other_layer_on_select, keys, **kwargs):
+  print('load_quadrant called.', palette, killer, kill_other_layer_on_select)
+  __QUADRANTS__.append( Quadrant(__NEW_PALETTES__[palette], palette, killer, kill_other_layer_on_select, selected, keys) )
 
 
 def loop():
@@ -46,11 +47,16 @@ def tick_all():
   map(lambda q: q.tick(), __QUADRANTS__)
 
 def handle_note_in(evt):
-  map(lambda q: q.check_note(evt[1]), __QUADRANTS__)
+  killers = map(lambda q: q.check_note(evt[1]), __QUADRANTS__)
+  numbers = [e for e in killers if isinstance(e, int)]
+  print('KILLING THESE NUMBERS', numbers)
+  # @TODO I think this is getting called "every time" which is too often.
+  map(lambda n: __QUADRANTS__[n].unselect(True), numbers)
 
 # check data1 and see if it matches our toggler.
 def handle_user_button_presses(evt):
-  map(lambda q: q.check_user_button(evt[1]), __QUADRANTS__)
+  killers = map(lambda q: q.check_user_button(evt[1]), __QUADRANTS__)
+
 
 # update palettes
 def handle_push_turns(evt):

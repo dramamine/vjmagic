@@ -45,6 +45,6 @@ def check_for_category_change(event):
           # print('guess we didnt have clips.')
         # use the config's default stuff
         # print('nothing special found', x['mode'])
-        encoders.set_display_mode(x['mode'], x['labels'], x['active'], 'unnamed')
+        encoders.set_display_mode(x['mode'], x['labels'], x['active'], '')
     except ValueError:
       pass

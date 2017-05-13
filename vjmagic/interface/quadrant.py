@@ -8,11 +8,13 @@ class Quadrant:
   palette_iterator = 0
   stack = []
 
-  def __init__(self, palette, palette_id, toggler, selected, keys):
+  def __init__(self, palette, palette_id, toggler, kill_other_layer_on_select, selected, keys):
     self.palette = palette
     self.palette_id = palette_id
     self.selected = selected
     self.toggler = toggler
+    print('saving dis:',kill_other_layer_on_select)
+    self.kill_other_layer_on_select = kill_other_layer_on_select
     self.keys = keys
 
     # color them initially
@@ -45,21 +47,28 @@ class Quadrant:
     # actually color the damn thing
     apply_color(self.selected, [thing])
 
-  def unselect(self):
+  def unselect(self, layer_toggle = False):
     if self.exception >= 0:
       apply_color(self.palette[0], [self.exception])
     outpututils.unlight_user_button(self.toggler)
     self.exception = -1
+    if layer_toggle == True:
+      print('YEAH KILLING THE LAYER', self.toggler)
+      outpututils.thru([constants.STATUS_CH1, self.toggler, 127]);
+      outpututils.thru([constants.STATUS_CH1, self.toggler, 0]);
 
   def check_note(self, note):
     if note in self.keys:
       self.toggle(note)
+      if self.kill_other_layer_on_select >= 0:
+        return self.kill_other_layer_on_select
+    return None
 
   # consider unselecting this layer. (selection is handled elsewhere)
   def check_user_button(self, key):
-    print('checking user button:', self.toggler, key)
     if self.toggler == key:
       self.unselect()
+
 
 def apply_color(color, buttons):
   for note in buttons:

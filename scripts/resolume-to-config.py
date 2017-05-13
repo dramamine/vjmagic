@@ -1,5 +1,5 @@
 import xml.etree.ElementTree as ET
-tree = ET.parse('C:/Users/marten/Dropbox/Resolume Arena 5/compositions/feb 2017 trials.avc')
+tree = ET.parse('C:/Users/marten/Dropbox/Resolume Arena 5/compositions/2017-05-13 hypno soft open.avc')
 root = tree.getroot() # 'composition'
 # print root
 
@@ -39,7 +39,7 @@ def coord_to_key(layer, track):
 clips = root.findall("./decks/deck[@name='Effect Clip']/clip")
 for clip in clips:
     # settings for effect clips only
-    settings = clip.find("settings/name[@value='Effect Clip']..")
+    settings = clip.find("settings/name[@value]..")
     if settings is not None:
         clip_name = settings.find('nameGiven').get('value')
         layer_idx = int(clip.get('layerIndex'))
@@ -50,7 +50,9 @@ for clip in clips:
         params = settings.findall('parameters/parameter')
         for param in params:
             param_names.append(param.find('nameGiven').get('value'))
-        print [key, 'KNOBS', clip_name, param_names]
+        print [key, clip_name, param_names], ","
+    settings = clip.find("settings/name[@value='Gradients']..")
+
 
 # All 'neighbor' grand-children of 'country' children of the top-level
 # elements
