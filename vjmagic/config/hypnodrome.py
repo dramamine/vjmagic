@@ -1,3 +1,5 @@
+# Polyglitch: Line Width on dashboard knobs didn't work - always bounces back to 63.
+# had to change it to Num Lines.
 from vjmagic import constants
 config = [{
   'mode': 'BASIC',
@@ -14,44 +16,54 @@ config = [{
     92, 93, 94, 95
   ],
   'clips': [
-    [68, 'Salvia', ['Litespd', 'L-Split', 'Details', 'D-Zoom', 'Salvia', 'Folding']] ,
-    [69, 'Spleigher', ['Opac', 'Fun', 'Brite', 'Contra', 'Distort']] ,
-    [70, 'Wowgrid', ['Crest', 'Swell', 'Grid', 'Thick', 'Dworld']] ,
-    [71, 'Oil Fire', ['Distort', 'Spd', 'DD']] ,
-    [76, 'Triangulate', ['Opac', 'Detail', 'Tunnel', 'Speed', 'TurnX', 'TurnY']] ,
-    [77, 'Blow&Blur', ['BlowX', 'BlowY', 'Blur', 'Splits', 'Screens']] ,
-    [78, '3D Glasses', ['Opac', 'Mode', 'Trails', 'Rush', 'Suck']] ,
-    [79, 'Bzzzt', ['RGB', 'Zoom', 'Light', 'Frames']] ,
-    [84, 'Frac Fractal', ['Opac', 'Scale', 'Zoom', 'Imagine', 'Second', 'Scale']] ,
-    [85, 'Stripe Sphere', ['Color', 'Color 2', 'Color 3', 'Style', 'Thick', 'Expand', 'Smooth', 'Zoom']] ,
-    [86, 'Tako', ['Color', 'Size', 'Count', 'Curl', 'Expand', 'Disperse', 'Mirror', 'Link 8']] ,
-    [87, 'Geequalizer', ['Reso', 'Extrude', 'Rotate', 'Zoom']] ,
-    [92, 'Qualizer', ['Color', 'Shape', 'Count', 'Edges', 'Rotate', 'Zoom', 'Link 7', 'Link 8']] ,
-    [93, '3Dizer', ['Color', 'Shape', 'Count', 'Style', 'Edges', 'Zoom', 'Link 7', 'Link 8']] ,
-    [94, 'Wavy Dots', ['Color', 'Size', 'Count', 'Spread', 'Speed', 'Rotate', 'Zoom', 'Link 8']] ,
-    [95, 'Polyglitch', ['Color', 'Size', 'Expand', 'Zoom']] ,
+    [68, 'DUMMY EFFECT DO NOT USE', [], False] ,
+    [69, 'Spleigher', ['Fun', 'Slay', 'Contra', 'Distort', 'Brite', 'Brite'], False] ,
+    [70, 'Blow&Blur', ['BlowX', 'BlowY', 'Blur', 'Splits', 'Screens'], False] ,
+    [71, 'Flight', ['Tilt', 'Altitude', 'Height', 'Jags', 'Texture'], False] ,
+    [76, 'DUMMY EFFECT DO NOT USE', [], False] ,
+    [77, 'Cyberscope (B)', ['Angles', 'Rotate', 'Cyber', 'C-Pass', 'Link 5'], False] ,
+    [78, 'Polyglitch', ['Color', 'Lines', 'Expand', 'Zoom', 'Link 5'], False] ,
+    [79, 'Chance of Hail (B)', ['Slow Pour', 'Size', 'Twist', 'Blue ^', 'Red v'], False] ,
+    [84, 'Rotating Panels', ['Craze', 'Edge', 'Confuse'], False] ,
+    [85, 'Point Grid (B)', ['Points', 'Reso', 'Worms', 'Trails', 'Quads'], False] ,
+    [86, 'Pixelnoise', ['Noise', 'Reso', 'Satch', 'Fountain'], False] ,
+    [87, 'Tritunnel (B)', ['Tunnel', 'Speed', 'TurnX', 'TurnY', 'Fractality'], False] ,
+    [92, 'Happy Trails', ['Trails', 'Perma'], False] ,
+    [93, 'Salvia', ['Bonkers', 'Timelines', 'Copies', 'Losing Focus'], False] ,
+    [94, 'Fux Given', ['Rings', 'Parts', 'Fux', 'Lag', 'Twirl'], False] ,
+    [95, 'Lawl of Mirrors', ['Ocean', 'Flipper', 'Mirror', 'Mirror', 'Mirror', 'Mirror'], False] ,
   ]
 }, {
-  'mode': 'TOUCH',
-  'active': 8,
+  'mode': 'BASIC',
+  'active': 6,
   'quadrant': 3,
   'palette': 2,
   'killer': constants.BUTTON_UNDO,
   'kill_other_layer_on_select': 0,
   'keys': [
-    # 72, 73, 74, 75,
-    81, 82, 83, # missing 80
-    89, 90, 91, # missing 88
-    # 96, 97, 98, 99
+    72, 73, 74, 75,
+    81, 82, 83, 80,
+    89, 90, 91, 88,
+    96, 97, 98, 99
   ],
   'clips': [
-    [81, 'Lawl of Mirrors', ['FlipX', 'FlipY', 'Mirror', 'Mirror', 'Mirror', 'Mirror', 'Ocean', 'Motion']] ,
-    [82, 'VHS Scrape', ['Opac', 'Numb', 'Rotate', 'Moar', 'Runaway', 'Speed', 'Thick', 'Negate']] ,
-    [83, 'Big Wave', ['Opac', 'W', 'H', 'Rotate', 'Glitch', 'Str', 'Surface', 'Burn']] ,
-    [89, '1-900-TRYPTAFAX', ['Opac', 'Scale', 'DriveX', 'DriveY', 'Dvishn', 'Detail', 'Edge', 'Color']] ,
-    [90, 'Point Grid', ['Points', 'Reso', 'Worms', 'Trails', 'Tris', 'Tri Hard', 'TriStorm', 'Quads']] ,
-    [91, 'Recolour (B)', ['Mood', 'Pedal', 'Floor It', 'Sepial', 'Cellular', 'Micro', 'Scope', 'Antenna']] ,
-    ]
+    [72, 'Posterize (AB)', ['Posters', 'Satch'], True] ,
+    [73, 'Bzzzt (AB)', ['RGB', 'Zoom', 'Light', 'Frames'], True] ,
+    [74, 'DUMMY EFFECT DO NOT USE', [], True] ,
+    [75, 'DUMMY EFFECT DO NOT USE', [], True] ,
+    [80, 'Horizontal (A)', ['Thick', 'Speed'], True] ,
+    [81, 'Recolour (AB)', ['Wiggity', 'Floor It', 'Cellular', 'Deckade',], True] ,
+    [82, '(AR) Qualizer', ['Color', 'Shape', 'Count', 'Edges', 'Rotate', 'Zoom', 'Link 7', 'Link 8'], True] ,
+    [83, 'DUMMY EFFECT DO NOT USE', [], True] ,
+    [88, 'Audiosucker (A)', ['Suck', 'Poster'], True] ,
+    [89, 'Oil Fire (AB)', ['Distort', 'Spd', 'DD'], True] ,
+    [90, '(AR) Wavy Dots', ['Color', 'Size', 'Count', 'Spread', 'Speed', 'Rotate', 'Zoom', 'Link 8'], True] ,
+    [91, 'Wowgrid (A)', ['Crest', 'Swell', 'Grid', 'Thick', ''], True] ,
+    [96, 'Dubs (A)', ['Dubs'], True] ,
+    [97, 'Triangulate (A)', ['Fractality', 'Gentle'], True] ,
+    [98, 'Ballmer (A)', ['Shape', '3D Reso', '2D Reso', 'Darkweb'], True] ,
+    [99, 'Stripwreck (A)', ['Yank', 'Tug', 'Strip', 'Wreck'], True] ,
+  ]
 }, {
   'mode': 'CLIPS',
   'active': 6,

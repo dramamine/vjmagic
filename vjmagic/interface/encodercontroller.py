@@ -10,7 +10,7 @@ def load_config(myconfig):
 
 def check_for_category_change(event):
   (status, data1, data2) = event
-  print("cat change:", event)
+  # print("cat change:", event)
   # don't trust these... ex. resolume sends some crap.
   # if data2 == 0:
   #   return
@@ -31,12 +31,12 @@ def check_for_category_change(event):
               # print("lookin for 68:", x['clips'][0][0])
               clip = filter(lambda x: x[0] == data1, x['clips'])[0]
               if clip:
-                  print(clip)
                   name = clip[1]
                   labels = clip[2]
+                  audio_reactive = clip[3]
                   # print(clip, name, labels)
                   # print('found specific clip:', name)
-                  encoders.set_display_mode(x['mode'], labels, len(labels), name)
+                  encoders.set_display_mode(x['mode'], labels, len(labels), name, audio_reactive)
                   return
           except e:
               print(e)

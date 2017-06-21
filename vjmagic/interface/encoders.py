@@ -31,8 +31,8 @@ def update_value(encoder, value):
 def get_display_mode():
   return state.display_mode
 
-def set_display_mode(mode, tolabels, active, name = ''):
-  print("set_display_mode called", mode, tolabels, active)
+def set_display_mode(mode, tolabels, active, name = '', audio_reactive = False):
+  print("set_display_mode called", mode, tolabels, active, audio_reactive)
   state.active_knobs = active
   if mode == state.display_mode and tolabels == state.labels:
     return
@@ -52,6 +52,11 @@ def set_display_mode(mode, tolabels, active, name = ''):
   else:
     print("WTF wrong mode y'all")
     return "WTF"
+
+  if audio_reactive:
+    tolabels += [''] * (6 - len(tolabels)) + ['GAIN', 'FALL']
+    print "my labels:", tolabels
+    state.active_knobs = 8
 
   state.display_mode = mode
   state.labels = tolabels
@@ -159,9 +164,13 @@ def handle_resolume_updates(event):
 
 ## update the display using 'basic' mode
 def update_display_basic():
-
-  # val_bytes =
   encoders = map(encoder_text_to_bytes, state.values[:state.active_knobs])
+
+  # removing encodings if there are no labels
+  for index, item in enumerate(state.labels):
+    if not item:
+      encoders[index] = [constants.TEXT_BLANK] * 8
+
   chained = list(itertools.chain.from_iterable(encoders))
   # sorry. adding blank spaces since width is 68, not 64
 
@@ -170,10 +179,7 @@ def update_display_basic():
       # print("adding blank here:", width)
       chained[width:width] = [constants.TEXT_BLANK]
 
-  # print("chained:", chained)
-
   outpututils.set_display_bytes(0, chained)
-  print("printing labels:", state.labels)
   # labels
   outpututils.set_display_cells(1,
     state.labels + [''] * (8 - len(state.labels)) # pad to 8 with empty strings
