@@ -44,8 +44,11 @@ for clip in clips:
 
         audio_reactive = False
         clip_name = settings.find('nameGiven').get('value')
-        if "(A" in clip_name:
-            audio_reactive = True
+        if "(" in clip_name:
+            if "(A" in clip_name:
+                audio_reactive = True
+            clip_name = clip_name[:clip_name.index("(")]
+
         layer_idx = int(clip.get('layerIndex'))
         track_idx = int(clip.get('trackIndex'))
         key = coord_to_key(layer_idx, track_idx)
@@ -53,7 +56,8 @@ for clip in clips:
         param_names = list()
         params = settings.findall('parameters/parameter')
         for param in params:
-            param_names.append(param.find('nameGiven').get('value'))
+            param_name = param.find('nameGiven').get('value');
+            param_names.append(param_name)
         print [key, clip_name, param_names, audio_reactive], ","
     settings = clip.find("settings/name[@value='Gradients']..")
 

@@ -54,7 +54,7 @@ def set_display_mode(mode, tolabels, active, name = '', audio_reactive = False):
     return "WTF"
 
   if audio_reactive:
-    tolabels += [''] * (6 - len(tolabels)) + ['GAIN', 'FALL']
+    tolabels += [''] * (7 - len(tolabels)) + ['REACTION']
     print "my labels:", tolabels
     state.active_knobs = 8
 
