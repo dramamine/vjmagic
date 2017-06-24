@@ -15,7 +15,8 @@ state = Stuff()
 state.touched = [False] * 9
 state.values = [0] * 9
 state.active_knobs = 8
-state.active_clip = 0
+# state.active_clip = 0
+state.active_effect_clip = 0
 state.update_display = None
 state.labels = []
 state.display_mode = ''
@@ -68,6 +69,10 @@ def set_display_mode(mode, tolabels, active, name = '', audio_reactive = False):
 # handle an event coming from the push
 def handle_push_turns(event):
   (status, data1, data2) = event
+  if state.display_mode == 'CLIPS' and state.active_effect_clip > 0:
+      outpututils.thru([constants.MIDI_NOTE_ON, state.active_effect_clip, 127])
+      return
+
   try:
     encoder_idx = constants.ENCODERS.index(data1)
   except ValueError:
@@ -102,9 +107,11 @@ def handle_push_touches(event):
 
 def save_active_clip(event):
   (status, data1, data2) = event
-  if data1 >= 36 and data1 <= 99:
+  # WARNING, we are hardcoding where the effects could be right here!!
+  # TODO TODO
+  if data1 >= 68 and data1 <= 99:
     # print("new active:", data1)
-    state.active_clip = data1
+    state.active_effect_clip = data1
 
 def load_router(keys, data):
   state.router_keys = keys
@@ -210,10 +217,16 @@ def update_display_touchy():
 # just add some labels... no interactions.
 def update_display_clips():
   # labels
-  outpututils.set_display_cells(0,
-    state.labels + [''] * (8 - len(state.labels)) # pad to 8 with empty strings
-  )
-  outpututils.set_display_line(3, state.display_name)
+  val_labels = map(lambda x, y: 'x'*8 if x else y, state.touched[:state.active_knobs], state.labels)
+  outpututils.set_display_cells(0, val_labels)
+
+  val_cells = map(lambda x: 'x'*8 if x else ' '*8, state.touched[:state.active_knobs])
+  outpututils.set_display_cells(1, val_cells)
+  outpututils.set_display_cells(2, val_cells)
+
+  to_line = outpututils.cells_to_line(val_cells)
+  with_name = state.display_name + to_line[len(state.display_name):len(to_line)]
+  outpututils.set_display_line(3, with_name)
 
 def encoder_text_to_bytes(x):
   # convert 128 to 16 levels.
