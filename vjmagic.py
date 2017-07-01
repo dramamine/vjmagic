@@ -3,7 +3,7 @@ import itertools
 import time
 import sys, os
 
-from vjmagic.interface import encodercontroller, encoders, graphics, outpututils
+from vjmagic.interface import encodercontroller, encoders, graphics, banks, outpututils
 from vjmagic.routers.pushrouter import PushRouter
 from vjmagic.routers.resolumerouter import ResolumeRouter
 from vjmagic.config.hypnodrome import config
@@ -33,6 +33,7 @@ words()
 for x in config:
   graphics.load_quadrant(**x)
 graphics.start()
+banks.color_bank_buttons()
 
 # could also try: signal, SIGINT. not working that well with Windows + Python2
 try:

@@ -2,7 +2,7 @@
 from vjmagic import constants
 import rtmidi
 from vjmagic.routers.base import Router
-from vjmagic.interface import encodercontroller, encoders, graphics, outpututils
+from vjmagic.interface import encodercontroller, encoders, banks, graphics, outpututils
 
 # Route messages from the Push (i.e. humans touching things)
 class PushRouter(Router):
@@ -39,6 +39,9 @@ class PushRouter(Router):
         return
       elif data1 in constants.LAYER_TOGGLE_BUTTONS:
         graphics.handle_user_button_presses(evt)
+
+      if data1 in constants.BANK_BUTTONS:
+          banks.handle_presses(evt)
       elif data1 in constants.USER_BUTTONS_ROUTED_TO_CH3:
         outpututils.thru([constants.STATUS_CH3, data1, data2])
         return
@@ -47,9 +50,11 @@ class PushRouter(Router):
     elif status == constants.MIDI_NOTE_ON:
       # TODO consider moving this function to resolume side
       graphics.handle_note_in(evt)
+
       # print("yep checking for cagt change.", data1)
-      # encodercontroller.check_for_category_change(evt)
+      encodercontroller.check_for_category_change(evt)
       encoders.save_active_clip(evt)
+
       if data1 <= 10:
         # these are definitely knob touches...
         # always eat these unless we're in 'touch' mode

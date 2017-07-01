@@ -36,7 +36,7 @@ def coord_to_key(layer, track):
     except IndexError:
         return -1
 
-clips = root.findall("./decks/deck[@name='hypno new']/clip")
+clips = root.findall("./decks/deck/clip")
 for clip in clips:
     # settings for effect clips only
     settings = clip.find("settings/name[@value]..")

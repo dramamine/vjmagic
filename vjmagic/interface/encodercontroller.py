@@ -4,11 +4,14 @@ from vjmagic.interface import encoders
 CONFIG = []
 
 def load_config(myconfig):
+  print("new config loading")
   global CONFIG # @TODO why do I need this?
   CONFIG = myconfig
 
 
+
 def check_for_category_change(event):
+  global CONFIG
   (status, data1, data2) = event
   # print("cat change:", event)
   # don't trust these... ex. resolume sends some crap.
@@ -21,6 +24,7 @@ def check_for_category_change(event):
     return
 
   for x in CONFIG:
+    # print("checkin out this config:", data1, x)
     keys = x['keys']
     try:
       if keys.index(data1) >= 0:

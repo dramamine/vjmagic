@@ -20,13 +20,26 @@ __PALETTES__ = [
 ]
 
 __NEW_PALETTES__ = [
-  [73, 74], # yelloes
+  # [33, 41],
+  # [37, 45],
+  [60, 61],
+  [69, 77],
+  [82, 90],
+
+
   blues,
   oranges,
-  [23, 24], # greens
-  [98, 99], # yellow/orange,
-  [72, 6], # red/orange, meh
   [49, 53], # purples
+  [45, 41], # blues
+  [73, 74], # yelloes
+  [92, 93], # pastels
+
+  [120, 121], # reds
+  [108, 109], # peachy
+  [25, 24], # greens
+  # [98, 99], # yellow/orange,
+
+  [56, 57], # pinkurples
 ]
 
 palette_index = 0
@@ -39,9 +52,14 @@ def load_quadrant(palette, killer, kill_other_layer_on_select, keys, **kwargs):
   print('load_quadrant called.', palette, killer, kill_other_layer_on_select)
   __QUADRANTS__.append( Quadrant(__NEW_PALETTES__[palette], palette, killer, kill_other_layer_on_select, selected, keys) )
 
+def reset():
+    print('yep, resettin')
+    Quadrant.apply_color(0, range(0, 128))
+    __QUADRANTS__ = []
 
 def loop():
   setInterval(tick_all, 0.1)
+
 
 def tick_all():
   map(lambda q: q.tick(), __QUADRANTS__)

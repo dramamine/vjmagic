@@ -5,7 +5,7 @@ midiout = rtmidi.MidiOut()
 available_ports = midiout.get_ports()
 print available_ports
 # push = available_ports.index("Ableton Push:Ableton Push MIDI 2 24:1")
-push = available_ports.index("MIDIOUT2 (Ableton Push) 5")
+push = available_ports.index("MIDIOUT2 (Ableton Push) 6")
 
 if push >= 0:
     midiout.open_port(push)

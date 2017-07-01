@@ -10,10 +10,10 @@ config = [{
   'kill_other_layer_on_select': 1,
   'labels': ['STR', 'MAG', 'INT', 'DEX', 'CON', 'LCK'],
   'keys': [
-    68, 69, 70, 71,
-    76, 77, 78, 79,
-    84, 85, 86, 87,
-    92, 93, 94, 95
+    69, 70, 71,
+    77, 78, 79,
+    85, 86, 87,
+    93, 94, 95
   ],
   'clips': [
     [68, 'DUMMY EFFECT DO NOT USE', [], False] ,
@@ -41,10 +41,10 @@ config = [{
   'killer': constants.BUTTON_UNDO,
   'kill_other_layer_on_select': 0,
   'keys': [
-    72, 73, 74, 75,
-    81, 82, 83, 80,
-    89, 90, 91, 88,
-    96, 97, 98, 99
+    72, 73, 74,
+    80, 81, 82,
+    88, 89, 90,
+    96, 97, 98
   ],
   'clips': [
     [74, 'DUMMY EFFECT DO NOT USE', [], True] ,
@@ -60,7 +60,7 @@ config = [{
     [90, '(AR) Wavy Dots', ['Color', 'Size', 'Count', 'Spread', 'Speed', 'Rotate', 'Zoom'], True] ,
     [91, 'Wowgrid (A)', ['Crest', 'Swell', 'Grid', 'Thick'], True] ,
     [96, 'Dubs (A)', ['Dubs'], True] ,
-    [97, 'Triangulate (A)', ['Fractlity', 'Gentle'], True] ,
+    [97, 'Triangulate (A)', ['Fractlty', 'Gentle'], True] ,
     [98, 'Ballmer (A)', ['Shape', '3D Reso', '2D Reso', 'Darkweb'], True] ,
   ]
 }, {
