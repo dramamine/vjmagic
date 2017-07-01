@@ -1,54 +1,57 @@
 from vjmagic import constants
 from vjmagic.interface import outpututils, encodercontroller, graphics
-from vjmagic.config.hypnodrome import config as hypno_new_config
-from vjmagic.config.hypnotouch import config as hypnotouch_config
+from vjmagic.config.bankmap import bankmap
+
 from time import sleep
-current_config = constants.HYPNO_NEW
+
+active_bank = bankmap[0]
 
 def color_bank_buttons():
+  global active_bank
   # light up our bank buttons
   for x in constants.BANK_BUTTONS:
-    print("trying to color ", x)
-    outpututils.note_sender([constants.STATUS_CH1, x, constants.BANK_COLOR_UNSELECTED])
+
+    if x == active_bank['key']:
+        outpututils.note_sender([constants.STATUS_CH1, x, constants.BANK_COLOR_SELECTED])
+    else:
+        outpututils.note_sender([constants.STATUS_CH1, x, constants.BANK_COLOR_UNSELECTED])
 
 def handle_presses(evt):
-    global current_config
+    global selected_bank, active_bank
     (status, data1, data2) = evt
     print("handling bank press:", data1)
-    if data1 == current_config:
+
+    # presses only. this filters out un-presses
+    if (data2 == 0):
+      return
+
+    if data1 not in constants.BANK_BUTTONS:
+      return
+
+    # ignore pressing the active bank
+    print(active_bank['key'])
+    if data1 == active_bank['key']:
+        print("early exit")
         return
 
-    if data1 in constants.BANK_BUTTONS:
-        outpututils.clear_display()
-        graphics.reset()
-        # load up a config
-        if data1 == constants.HYPNO_NEW:
-            updated_config = hypno_new_config
-            print("switching to hypno new")
-            outpututils.set_display_line(1, "Switching to basic setup...")
-            # encodercontroller.load_config(hypno_new_config)
-            # print("hypno new config loaded")
-            # for x in hypno_new_config:
-            #     print("fixing graphics")
-            #     graphics.reset()
-            #     graphics.load_quadrant(**x)
-            print("completed.")
-        elif data1 == constants.HYPNO_ADV:
-            updated_config = hypnotouch_config
-            print("switching to hypno adv")
-            outpututils.set_display_line(1, "Switching to ADVANCED setup... hope you know what you're doing!")
-            # encodercontroller.load_config(hypnotouch_config)
-            # print("hypno adv config loaded")
-            # print("fixing graphics")
-        else:
-          print("Could not find that config!")
-          return
+    new_bank = filter(lambda x: x['key'] == data1, bankmap)[0]
+    print("loading bank:", new_bank)
+    if not new_bank:
+      print("Could not find that config!")
+      return
 
+    # clearing stuff
+    outpututils.clear_display()
+    graphics.reset()
+
+    try:
         # assuming we were successful with finding config
-        encodercontroller.load_config(updated_config)
-        for x in updated_config:
-            print("loading x:")
+        encodercontroller.load_config(new_bank['config'])
+        for x in new_bank['config']:
             graphics.load_quadrant(**x)
+    except Exception as e:
+        raise e
 
-        print "setting current_config"
-        current_config = data1
+    # save
+    active_bank = new_bank
+    color_bank_buttons()

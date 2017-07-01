@@ -1,6 +1,6 @@
 import threading
 from vjmagic import constants
-from vjmagic.interface.quadrant import Quadrant
+from vjmagic.interface.quadrant import Quadrant, apply_color
 
 def setInterval(func, time):
   e = threading.Event()
@@ -49,16 +49,16 @@ palette_index = 0
 __QUADRANTS__ = []
 
 def load_quadrant(palette, killer, kill_other_layer_on_select, keys, **kwargs):
-  print('load_quadrant called.', palette, killer, kill_other_layer_on_select)
+  # print('load_quadrant called.', palette, killer, kill_other_layer_on_select)
   __QUADRANTS__.append( Quadrant(__NEW_PALETTES__[palette], palette, killer, kill_other_layer_on_select, selected, keys) )
 
 def reset():
-    print('yep, resettin')
-    Quadrant.apply_color(0, range(0, 128))
+    global __QUADRANTS__
+    apply_color(0, range(0, 128))
     __QUADRANTS__ = []
 
 def loop():
-  setInterval(tick_all, 0.1)
+  setInterval(tick_all, 0.14)
 
 
 def tick_all():
@@ -67,7 +67,7 @@ def tick_all():
 def handle_note_in(evt):
   killers = map(lambda q: q.check_note(evt[1]), __QUADRANTS__)
   numbers = [e for e in killers if isinstance(e, int)]
-  print('KILLING THESE NUMBERS', numbers)
+  # print('KILLING THESE NUMBERS', numbers)
   # @TODO I think this is getting called "every time" which is too often.
   map(lambda n: __QUADRANTS__[n].unselect(True), numbers)
 
