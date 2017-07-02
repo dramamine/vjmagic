@@ -33,12 +33,12 @@ def get_display_mode():
   return state.display_mode
 
 def set_display_mode(mode, tolabels, active, name = '', audio_reactive = False):
-  print("set_display_mode called", mode, tolabels, active, audio_reactive)
+  # print("set_display_mode called", mode, tolabels, active, audio_reactive)
   state.active_knobs = active
-  if mode == state.display_mode and tolabels == state.labels:
+  if mode == state.display_mode and tolabels == state.labels and name == state.display_name:
     return
-  else:
-    print(mode, "was not", state.display_mode)
+
+  state.display_name = name
 
   if mode == 'BASIC':
     # print("switching to basic display")
@@ -56,12 +56,11 @@ def set_display_mode(mode, tolabels, active, name = '', audio_reactive = False):
 
   if audio_reactive:
     tolabels += [''] * (7 - len(tolabels)) + ['REACTION']
-    print "my labels:", tolabels
     state.active_knobs = 8
 
   state.display_mode = mode
   state.labels = tolabels
-  state.display_name = name
+
   # clear before we do anything...
   outpututils.clear_display()
   state.update_display()
@@ -217,8 +216,10 @@ def update_display_touchy():
 # just add some labels... no interactions.
 def update_display_clips():
   # labels
+  print("update display clips called.")
   val_labels = map(lambda x, y: 'x'*8 if x else y, state.touched[:state.active_knobs], state.labels)
   outpututils.set_display_cells(0, val_labels)
+  print("labels are now", state.labels)
 
   val_cells = map(lambda x: 'x'*8 if x else ' '*8, state.touched[:state.active_knobs])
   outpututils.set_display_cells(1, val_cells)

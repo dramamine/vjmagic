@@ -2,7 +2,11 @@ import threading
 from vjmagic import constants
 from vjmagic.interface.quadrant import Quadrant, apply_color
 
+ticker_active = False
+
 def setInterval(func, time):
+  global ticker_active
+  ticker_active = True
   e = threading.Event()
   while not e.wait(time):
     func()
@@ -53,15 +57,20 @@ def load_quadrant(palette, killer, kill_other_layer_on_select, keys, **kwargs):
   __QUADRANTS__.append( Quadrant(__NEW_PALETTES__[palette], palette, killer, kill_other_layer_on_select, selected, keys) )
 
 def reset():
-    global __QUADRANTS__
+    global __QUADRANTS__, ticker_active
     apply_color(0, range(0, 128))
     __QUADRANTS__ = []
+    # ticker_active = False
 
 def loop():
   setInterval(tick_all, 0.14)
 
 
 def tick_all():
+  global ticker_active
+  if not ticker_active:
+    print("skipping tick phase")
+    return
   map(lambda q: q.tick(), __QUADRANTS__)
 
 def handle_note_in(evt):

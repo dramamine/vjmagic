@@ -33,13 +33,17 @@ def check_for_category_change(event):
         # try to find a thing in clips
           try:
               # print("lookin for 68:", x['clips'][0][0])
-              clip = filter(lambda x: x[0] == data1, CONFIG['clips'])[0]
-              if clip:
+              matching_clips = filter(lambda x: x[0] == data1, CONFIG['clips'])
+
+              if matching_clips:
+                  clip = matching_clips[0]
                   name = clip[1]
-                  labels = clip[2]
+                  # included in config for effects,
+                  # but for clips its [], so resolve to quad's labels
+                  labels = clip[2] or x['labels']
                   audio_reactive = clip[3]
                   # print(clip, name, labels)
-                  # print('found specific clip:', name)
+                  print('found specific clip:', name)
                   encoders.set_display_mode(x['mode'], labels, len(labels), name, audio_reactive)
                   return
           except e:
@@ -48,7 +52,7 @@ def check_for_category_change(event):
         # else:
           # print('guess we didnt have clips.')
         # use the config's default stuff
-        # print('nothing special found', x['mode'])
+        # print('nothing special found', x)
         encoders.set_display_mode(x['mode'], x['labels'], x['active'], '')
     except ValueError:
       pass

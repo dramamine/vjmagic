@@ -1,5 +1,5 @@
 import xml.etree.ElementTree as ET
-tree = ET.parse('C:/Users/marten/Dropbox/Resolume Arena 5/compositions/2017-06-18 crit prep.avc')
+tree = ET.parse('C:/Users/marten/Dropbox/Resolume Arena 5/compositions/2017-07-01 crit prep.avc')
 root = tree.getroot() # 'composition'
 # print root
 

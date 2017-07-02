@@ -13,13 +13,15 @@ def color_bank_buttons():
 
     if x == active_bank['key']:
         outpututils.note_sender([constants.STATUS_CH1, x, constants.BANK_COLOR_SELECTED])
+    elif x == constants.HYPNO_ADV:
+        outpututils.note_sender([constants.STATUS_CH1, x, constants.BANK_COLOR_SECRET])
     else:
         outpututils.note_sender([constants.STATUS_CH1, x, constants.BANK_COLOR_UNSELECTED])
 
 def handle_presses(evt):
     global selected_bank, active_bank
     (status, data1, data2) = evt
-    print("handling bank press:", data1)
+    # print("handling bank press:", data1)
 
     # presses only. this filters out un-presses
     if (data2 == 0):
@@ -47,9 +49,10 @@ def handle_presses(evt):
     try:
         # assuming we were successful with finding config
         encodercontroller.load_config(new_bank['config'])
-        for x in new_bank['config']['quadrant']:
+        for x in new_bank['config']['quadrants']:
             graphics.load_quadrant(**x)
     except Exception as e:
+        print("some excpetion", e)
         raise e
 
     # save
