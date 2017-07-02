@@ -44,6 +44,7 @@ CC_CHANGE = 0xB1 # 177
 CC_EMU = 0xB2 # 178
 
 GRAPHICS_KNOB = 14 # the leftmost knob
+COLOR_SPEED_KNOB = 15 # 2nd-leftmost knob
 
 # character codes.
 TEXT_SOLID_BARS = 5

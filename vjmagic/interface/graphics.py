@@ -2,10 +2,40 @@ import threading
 from vjmagic import constants
 from vjmagic.interface.quadrant import Quadrant, apply_color
 
-def setInterval(func, time):
+SLOWEST_POSSIBLE_SPEED = 1.3
+SPEED_INTERVAL = 0.01
+running = False
+tick_interval = 0.14
+tick_speed_level = 35
+
+# new threading strat
+pill2kill = None
+t = None
+
+
+# set once and forget, use globals to make changes
+def start_interval(func):
+  global running, tick_interval
   e = threading.Event()
-  while not e.wait(time):
+  running = True
+  while running and not e.wait(tick_interval):
     func()
+
+# in case we want
+def pause_interval():
+  global running
+  running = False
+
+def adjust_color_speed(evt):
+  global tick_speed_level, SPEED_INTERVAL, SLOWEST_POSSIBLE_SPEED
+  (status, data1, data2) = evt
+  # turn data2 into an amount by which to adjust
+  adjustment = min(128 - data2, data2)
+  tick_speed_level = min(max(0, tick_speed_level + adjustment), 127)
+  tick_interval = SLOWEST_POSSIBLE_SPEED - (tick_speed_level * SPEED_INTERVAL)
+  print("updated color speed:", tick_speed_level, tick_interval)
+  reset_timer()
+
 
 __NOTE_TRACKER__ = dict()
 __NOTES_TOGGLED_BY_USER__ = dict()
@@ -54,11 +84,29 @@ def load_quadrant(palette, killer, kill_other_layer_on_select, keys, **kwargs):
 
 def reset():
     global __QUADRANTS__
+
     apply_color(0, range(0, 128))
     __QUADRANTS__ = []
+    reset_timer()
+
+def reset_timer():
+  global __QUADRANTS__, pill2kill, t
+  # pill2kill.set()
+  # t.join()
+  loop()
 
 def loop():
-  setInterval(tick_all, 0.14)
+  global pill2kill, t
+  # start_interval(tick_all)
+  pill2kill = threading.Event()
+  t = threading.Thread(target=doit, args=(pill2kill, tick_all))
+  t.start()
+  doit(pill2kill, tick_all)
+
+def doit(stop_event, func):
+    while not stop_event.wait(1):
+        func()
+    print("Stopping as you wish.")
 
 
 def tick_all():

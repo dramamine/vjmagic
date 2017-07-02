@@ -37,6 +37,9 @@ class PushRouter(Router):
       elif data1 == constants.GRAPHICS_KNOB:
         graphics.handle_push_turns(evt)
         return
+      elif data1 == constants.COLOR_SPEED_KNOB:
+        graphics.adjust_color_speed(evt)
+        return
       elif data1 in constants.LAYER_TOGGLE_BUTTONS:
         graphics.handle_user_button_presses(evt)
 
