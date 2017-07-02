@@ -23,17 +23,17 @@ def check_for_category_change(event):
   if data1 < 36 or data1 > 99:
     return
 
-  for x in CONFIG:
+  for x in CONFIG['quadrants']:
     # print("checkin out this config:", data1, x)
     keys = x['keys']
     try:
       if keys.index(data1) >= 0:
         # print('checkin x:', x)
-        if 'clips' in x:
+        if CONFIG['clips']:
         # try to find a thing in clips
           try:
               # print("lookin for 68:", x['clips'][0][0])
-              clip = filter(lambda x: x[0] == data1, x['clips'])[0]
+              clip = filter(lambda x: x[0] == data1, CONFIG['clips'])[0]
               if clip:
                   name = clip[1]
                   labels = clip[2]

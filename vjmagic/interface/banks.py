@@ -47,7 +47,7 @@ def handle_presses(evt):
     try:
         # assuming we were successful with finding config
         encodercontroller.load_config(new_bank['config'])
-        for x in new_bank['config']:
+        for x in new_bank['config']['quadrant']:
             graphics.load_quadrant(**x)
     except Exception as e:
         raise e

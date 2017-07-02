@@ -30,7 +30,7 @@ def words():
 
 words()
 
-for x in config:
+for x in config['quadrants']:
   graphics.load_quadrant(**x)
 graphics.start()
 banks.color_bank_buttons()
