@@ -3,7 +3,7 @@ from vjmagic import constants
 from vjmagic.interface.quadrant import Quadrant, apply_color
 from time import sleep
 
-__BANK_SWITCH_DELAY__ = 12
+__BANK_SWITCH_DELAY__ = 5.5
 ticker_active = False
 
 def setInterval(func, time):
@@ -63,10 +63,13 @@ def reset():
     apply_color(0, range(0, 128))
     __QUADRANTS__ = []
     ticker_active = False
-    sleep(__BANK_SWITCH_DELAY__)
-    ticker_active = True
 
+    timer = threading.Timer(__BANK_SWITCH_DELAY__, set_ticker_active)
+    timer.start()
 
+def set_ticker_active():
+  global ticker_active
+  ticker_active = True
 
 def loop():
   setInterval(tick_all, 0.14)

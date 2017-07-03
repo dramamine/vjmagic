@@ -6,7 +6,8 @@ import sys, os
 from vjmagic.interface import encodercontroller, encoders, graphics, banks, outpututils
 from vjmagic.routers.pushrouter import PushRouter
 from vjmagic.routers.resolumerouter import ResolumeRouter
-from vjmagic.config.hypnodrome import config
+# @TODO probs shouldnt hardcode this; move to bank
+from vjmagic.config.hypnodrome_alpha import config
 
 # always flush stdout
 # http://stackoverflow.com/questions/230751/how-to-flush-output-of-python-print

@@ -3,7 +3,7 @@ from vjmagic.interface import encoders, outpututils
 
 CONFIG = []
 
-active_effect_clip = 70
+active_effect_clip = 0
 
 def load_config(myconfig):
   print("new config loading")
@@ -49,7 +49,7 @@ def check_for_category_change(event):
                   # but for clips its [], so resolve to quad's labels
                   labels = clip[2] or x['labels']
                   audio_reactive = clip[3]
-
+                  print("using active clip:", clip)
                   encoders.set_display_mode(x['mode'], labels, len(labels), name, audio_reactive)
 
                   # saving active clip
