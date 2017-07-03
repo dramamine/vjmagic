@@ -16,7 +16,7 @@ state.touched = [False] * 9
 state.values = [0] * 9
 state.active_knobs = 8
 # state.active_clip = 0
-state.active_effect_clip = 0
+state.active_effect_clip = 70
 state.update_display = None
 state.labels = []
 state.display_mode = ''
@@ -68,8 +68,14 @@ def set_display_mode(mode, tolabels, active, name = '', audio_reactive = False):
 # handle an event coming from the push
 def handle_push_turns(event):
   (status, data1, data2) = event
+
   if state.display_mode == 'CLIPS' and state.active_effect_clip > 0:
-      outpututils.thru([constants.MIDI_NOTE_ON, state.active_effect_clip, 127])
+      print("OK clicking my active clip:", state.active_effect_clip)
+
+      # sending to resolume
+      mock_event = [constants.MIDI_NOTE_ON, state.active_effect_clip, 127]
+      outpututils.thru(mock_event)
+
       return
 
   try:

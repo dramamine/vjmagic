@@ -32,7 +32,9 @@ class PushRouter(Router):
 
     if status == constants.STATUS_CH1:
       if data1 in constants.ENCODERS:
+          encodercontroller.handle_push_turns(evt)
           encoders.handle_push_turns(evt)
+
           return
       elif data1 == constants.GRAPHICS_KNOB:
         graphics.handle_push_turns(evt)
