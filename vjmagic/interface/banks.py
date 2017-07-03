@@ -44,6 +44,15 @@ def handle_presses(evt):
 
     # clearing stuff
     outpututils.clear_display()
+    outpututils.set_display_line(0, '                     Switching video banks...')
+    outpututils.set_display_line(1, '                      now loading ' + new_bank['title'] + '...')
+    if new_bank['subtitle']:
+      outpututils.set_display_line(2, new_bank['subtitle'])
+    outpututils.set_display_line(3, '                     thank you for your patience')
+    # save
+    active_bank = new_bank
+    color_bank_buttons()
+
     graphics.reset()
 
     try:
@@ -54,7 +63,3 @@ def handle_presses(evt):
     except Exception as e:
         print("some excpetion", e)
         raise e
-
-    # save
-    active_bank = new_bank
-    color_bank_buttons()

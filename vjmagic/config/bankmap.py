@@ -8,21 +8,25 @@ bankmap = [
     {
         'key': constants.HYPNO_ALPHA,
         'title': 'HYPNO ALPHA',
+        'subtitle': '',
         'config': hypnodrome_alpha,
     },
     {
         'key': constants.HYPNO_BETA,
         'title': 'HYPNO BETA',
+        'subtitle': '',
         'config': hypnodrome_beta,
     },
     {
         'key': constants.HYPNO_GAMMA,
         'title': 'HYPNO GAMMA',
+        'subtitle': '',
         'config': hypnodrome_gamma,
     },
     {
         'key': constants.HYPNO_ADV,
-        'title': 'ADVANCED: touch-knob effects, speed-warp video',
+        'title': 'ADVANCED SETUP',
+        'subtitle': '(Touch-knob effects, speed-warp video, easter eggs)',
         'config': hypnotouch_config,
     },
 ]
