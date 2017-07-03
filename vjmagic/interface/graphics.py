@@ -78,7 +78,6 @@ def loop():
 def tick_all():
   global ticker_active
   if not ticker_active:
-    print("skipping tick phase")
     return
   map(lambda q: q.tick(), __QUADRANTS__)
 
@@ -98,10 +97,10 @@ def handle_user_button_presses(evt):
 def handle_push_turns(evt):
   global palette_index
   (status, data1, data2) = evt
-  print("graphics push turn:", evt)
+  # print("graphics push turn:", evt)
   # increment for now
   palette_index = (palette_index + 1) % len(__NEW_PALETTES__)
-  print("idx:")
+  # print("idx:")
   for q in __QUADRANTS__:
     updated_idx = (q.palette_id + palette_index) % len(__NEW_PALETTES__)
     q.update_palette(__NEW_PALETTES__[updated_idx])

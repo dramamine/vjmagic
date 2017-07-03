@@ -16,7 +16,7 @@ state.touched = [False] * 9
 state.values = [0] * 9
 state.active_knobs = 8
 # state.active_clip = 0
-state.active_effect_clip = 70
+
 state.update_display = None
 state.labels = []
 state.display_mode = ''
@@ -69,13 +69,7 @@ def set_display_mode(mode, tolabels, active, name = '', audio_reactive = False):
 def handle_push_turns(event):
   (status, data1, data2) = event
 
-  if state.display_mode == 'CLIPS' and state.active_effect_clip > 0:
-      print("OK clicking my active clip:", state.active_effect_clip)
-
-      # sending to resolume
-      mock_event = [constants.MIDI_NOTE_ON, state.active_effect_clip, 127]
-      outpututils.thru(mock_event)
-
+  if state.display_mode == 'CLIPS':
       return
 
   try:
@@ -132,7 +126,7 @@ def reroute_push_touches(event):
   elif state.display_mode == 'CLIPS':
     return cuepoints_routing(event)
   elif state.display_mode == 'BASIC':
-    print('encoders.py: eating this touch')
+    # print('encoders.py: eating this touch')
     return True
   return False
 
@@ -169,7 +163,7 @@ def handle_resolume_updates(event):
     print("couldnt find", data1)
     return None
 
-  print "resolume sez: set encoder ", encoder, " with index", data1, " from ", state.values[encoder], " to ", data2
+  # print "resolume sez: set encoder ", encoder, " with index", data1, " from ", state.values[encoder], " to ", data2
   state.values[encoder] = data2
   state.update_display()
 
@@ -222,10 +216,10 @@ def update_display_touchy():
 # just add some labels... no interactions.
 def update_display_clips():
   # labels
-  print("update display clips called.")
+  # print("update display clips called.")
   val_labels = map(lambda x, y: 'x'*8 if x else y, state.touched[:state.active_knobs], state.labels)
   outpututils.set_display_cells(0, val_labels)
-  print("labels are now", state.labels)
+  # print("labels are now", state.labels)
 
   val_cells = map(lambda x: 'x'*8 if x else ' '*8, state.touched[:state.active_knobs])
   outpututils.set_display_cells(1, val_cells)

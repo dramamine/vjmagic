@@ -13,7 +13,6 @@ class Quadrant:
     self.palette_id = palette_id
     self.selected = selected
     self.toggler = toggler
-    print('saving dis:',kill_other_layer_on_select)
     self.kill_other_layer_on_select = kill_other_layer_on_select
     self.keys = keys
 
@@ -53,7 +52,6 @@ class Quadrant:
     outpututils.unlight_user_button(self.toggler)
     self.exception = -1
     if layer_toggle == True:
-      print('YEAH KILLING THE LAYER', self.toggler)
       outpututils.thru([constants.STATUS_CH1, self.toggler, 127]);
       outpututils.thru([constants.STATUS_CH1, self.toggler, 0]);
 
