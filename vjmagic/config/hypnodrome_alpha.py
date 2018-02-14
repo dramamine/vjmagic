@@ -95,7 +95,7 @@ config = {
   'palette': 0,
   'killer': constants.BUTTON_QUANTIZE,
   'kill_other_layer_on_select': 3,
-  'labels': ['intro', 'verse', 'chorus', 'bridge', 'break', 'outro'],
+  'labels': [''],
   'keys': [
     36, 37, 38, 39,
     44, 45, 46, 47,

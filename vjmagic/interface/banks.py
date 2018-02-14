@@ -7,16 +7,18 @@ from time import sleep
 active_bank = bankmap[0]
 
 def color_bank_buttons():
-  global active_bank
+  # crit dont want none
+  return
+  # global active_bank
   # light up our bank buttons
-  for x in constants.BANK_BUTTONS:
-
-    if x == active_bank['key']:
-        outpututils.note_sender([constants.STATUS_CH1, x, constants.BANK_COLOR_SELECTED])
-    elif x == constants.HYPNO_ADV:
-        outpututils.note_sender([constants.STATUS_CH1, x, constants.BANK_COLOR_SECRET])
-    else:
-        outpututils.note_sender([constants.STATUS_CH1, x, constants.BANK_COLOR_UNSELECTED])
+  # for x in constants.BANK_BUTTONS:
+  #
+  #   if x == active_bank['key']:
+  #       outpututils.note_sender([constants.STATUS_CH1, x, constants.BANK_COLOR_SELECTED])
+  #   elif x == constants.HYPNO_ADV:
+  #       outpututils.note_sender([constants.STATUS_CH1, x, constants.BANK_COLOR_SECRET])
+  #   else:
+  #       outpututils.note_sender([constants.STATUS_CH1, x, constants.BANK_COLOR_UNSELECTED])
 
 def handle_presses(evt):
     global selected_bank, active_bank

@@ -3,43 +3,52 @@ import itertools
 import time
 import sys, os
 
-from vjmagic.interface import encodercontroller, encoders, graphics, banks, outpututils
-from vjmagic.routers.pushrouter import PushRouter
-from vjmagic.routers.resolumerouter import ResolumeRouter
+# from vjmagic.interface import encodercontroller, encoders, graphics, banks, outpututils
+# from vjmagic.routers.pushrouter import PushRouter
+# from vjmagic.routers.resolumerouter import ResolumeRouter
+from vjmagic.routers.fighter64 import Fighter64
+from vjmagic.state import resolume
+from vjmagic.config.midifighter import config
+fighter64 = Fighter64()
+
+resolume.load_map(config['buttons'])
+
 # @TODO probs shouldnt hardcode this; move to bank
-from vjmagic.config.hypnodrome_alpha import config
+# from vjmagic.config.hypnodrome_alpha import config
 
 # always flush stdout
 # http://stackoverflow.com/questions/230751/how-to-flush-output-of-python-print
-sys.stdout = os.fdopen(sys.stdout.fileno(), 'w', 0)
+# sys.stdout = os.fdopen(sys.stdout.fileno(), 'w', 0)
 
-encodercontroller.load_config(config)
+# encodercontroller.load_config(config)
 
-aol = PushRouter()
-print("push loaded.")
+# aol = PushRouter()
+# print("push loaded.")
 
-res = ResolumeRouter()
-print("resolume loaded.")
+# res = ResolumeRouter()
+# print("resolume loaded.")
 
 # intro display
-def words():
-  outpututils.clear_display()
+# def words():
+#   outpututils.clear_display()
 
-  outpututils.set_display_line(0, '                       WELCAME TO HYPNODROME')
-  outpututils.set_display_bytes(2, map(lambda x: int(x), range(68)))
-  outpututils.set_display_bytes(3, map(lambda x: int(x), range(69,127)))
+#   outpututils.set_display_line(0, '                       WELCAME TO HYPNODROME')
+#   outpututils.set_display_bytes(2, map(lambda x: int(x), range(68)))
+#   outpututils.set_display_bytes(3, map(lambda x: int(x), range(69,127)))
 
-words()
+# words()
 
-for x in config['quadrants']:
-  graphics.load_quadrant(**x)
-graphics.start()
-banks.color_bank_buttons()
+# for x in config['quadrants']:
+#   graphics.load_quadrant(**x)
+# graphics.start()
+# banks.color_bank_buttons()
 
 # could also try: signal, SIGINT. not working that well with Windows + Python2
-try:
-  graphics.loop()
-except KeyboardInterrupt:
-  outpututils.clear_display()
-  print "bye"
-  sys.exit(0)
+
+while 1==1:
+	try:
+	  # graphics.loop()
+	  pass
+	except KeyboardInterrupt:
+	  print("bye")
+	  sys.exit(0)
