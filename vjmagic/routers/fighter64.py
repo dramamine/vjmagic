@@ -2,7 +2,7 @@
 from vjmagic import constants
 import rtmidi
 from vjmagic.routers.base import Router
-from vjmagic.state import resolume
+from vjmagic.state import hardware
 # from vjmagic.interface import encodercontroller, encoders, banks, graphics, outpututils
 
 # Route messages from the Push (i.e. humans touching things)
@@ -39,7 +39,11 @@ class Fighter64(Router):
     print(self.name, evt)
 
     if status == constants.MIDI_NOTE_ON3:
-      resolume.handle_button_press(data1)
+      hardware.handle_button_press(data1)
+
+
+  def turn_on_lights(layer, lights):
+    print("got turn_on_lights call.", layer, lights)
 
     # if status == constants.STATUS_CH1:
     #   if data1 in constants.ENCODERS:

@@ -7,11 +7,11 @@ import sys, os
 # from vjmagic.routers.pushrouter import PushRouter
 # from vjmagic.routers.resolumerouter import ResolumeRouter
 from vjmagic.routers.fighter64 import Fighter64
-from vjmagic.state import resolume
+from vjmagic.state import hardware
 from vjmagic.config.midifighter import config
 fighter64 = Fighter64()
 
-resolume.load_map(config['buttons'])
+hardware.load_map(config['buttons'])
 
 # @TODO probs shouldnt hardcode this; move to bank
 # from vjmagic.config.hypnodrome_alpha import config
