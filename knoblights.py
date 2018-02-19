@@ -6,17 +6,26 @@ import sys, os
 # from vjmagic.interface import encodercontroller, encoders, graphics, banks, outpututils
 # from vjmagic.routers.pushrouter import PushRouter
 # from vjmagic.routers.resolumerouter import ResolumeRouter
-from vjmagic.routers.twister import Twister
+from vjmagic.routers import twister
+from vjmagic.routers.fighter64 import Fighter64
 from vjmagic.state import hardware
 from vjmagic.config.midifighter import config
-twister = Twister()
 
-hardware.load_map(config['buttons'])
+from vjmagic.routers.resolume import Resolume
+twister.init()
+resolume = Resolume()
+fighter64 = Fighter64()
+twister.use(resolume)
+fighter64.use(resolume)
 
-while 1==1:
+
+
+if __name__ == '__main__':
   try:
-    # graphics.loop()
-    pass
-  except KeyboardInterrupt:
-    print("bye")
-    sys.exit(0)
+    hardware.load_config(config)
+  except:
+    import sys
+    print(sys.exc_info()[0])
+  finally:
+    print("Press Enter to continue ...")
+    input()

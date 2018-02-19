@@ -31,6 +31,8 @@ class Fighter64(Router):
     # need this or it gets...garbage-collected?!?
     self.midiinput = midiinput
 
+  def use(self, rezzie):
+    self.rezzie = rezzie
 
   # this handler's probably in every router
   def handler(self, event, data=None):
@@ -40,6 +42,11 @@ class Fighter64(Router):
 
     if status == constants.MIDI_NOTE_ON3:
       hardware.handle_button_press(data1)
+    elif status == 130:
+      hardware.handle_button_release(data1)
+
+    # forward everything to resolume
+    self.rezzie.thru(evt)
 
 
   def turn_on_lights(layer, lights):
