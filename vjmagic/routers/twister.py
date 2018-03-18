@@ -50,7 +50,7 @@ def handler(event, data=None):
   if status == 176:
     cc = hardware.get_target_encoder(data1)
     if cc >= 0:
-      midithru.send_message([179, cc, data2])
+      rezzie.thru([179, cc, data2])
 
 
 def turn_on_light(encoder):

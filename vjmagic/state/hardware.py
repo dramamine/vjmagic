@@ -41,14 +41,15 @@ def reassess_layer(layer_to_reassess):
     if layer_to_reassess == layer:
       layer_map.extend(knobs)
 
-  # uniques, preserve order, first 4
-  layer_map = f7(layer_map)[0:4]
+  layer_size = len(layers_to_knobs_map[layer_to_reassess])
 
-  print("want to use layer map:", layer_map)
-  print("knob map:", active_knob_map)
+  # uniques, preserve order, first 4
+  layer_map = f7(layer_map)[0:layer_size]
+
+  # print("want to use layer map:", layer_map)
   old_count = len(active_knob_map[layer_to_reassess])
   new_count = len(layer_map)
-  for i in range(1, 5):
+  for i in range(1, layer_size+1):
     enc = layers_to_knobs_map[layer_to_reassess][i-1]
     if i > old_count and i <= new_count:
       twister.turn_on_light(enc)
@@ -59,24 +60,32 @@ def reassess_layer(layer_to_reassess):
   #   twister.turn_on_lights(layer, len(layer_map))
 
   active_knob_map[layer_to_reassess] = layer_map
+  print("knob map updated to:", active_knob_map)
 
+# 'encoder' is the cc that comes from Twister; this is 0-15, the lower left one is 12.
+# first we find the Resolume layer that this corresponds to. ex. twister 12 only controls
+# effects in layer 4 (for example; actual stuff is defined in the config)
+# 
 def get_target_encoder(encoder):
   [layer, idx] = find_layer_position(encoder)
+  print("getting target encoder for ", encoder, "; checkin layer and idx ", layer, idx);
 
   # shouldn't happen
   if layer == -1:
     return -1
 
   if layer not in active_knob_map:
+    print(layer, " not in active knob map")
     return -1
 
-  if idx not in active_knob_map[layer]:
+  try:
+    dashboard = active_knob_map[layer][idx]
+    cc = (layer - 3) * 8 + dashboard
+    print("targeting this cc:", cc, " from layer ", layer, " dashboard", dashboard)
+    return cc
+  except ValueError:
+    print("value error; did active_knob_map[layer][idx] not exist?")
     return -1
-
-  dashboard = active_knob_map[layer][idx]
-  cc = (layer - 3) * 8 + active
-  print("targeting this cc:", cc, " from layer ", layer, " dashboard", dashboard)
-  return cc
 
 
 # def sync_knobs():
