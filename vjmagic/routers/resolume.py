@@ -10,6 +10,8 @@ class Resolume(Router):
   encoder_controller = None
   output = None
 
+  subscriptions = []
+
   # TODO probably want singletons for this
   def __init__(self, ):
     Router.__init__(self, "resolume input")
@@ -43,6 +45,11 @@ class Resolume(Router):
     (status, data1, data2) = evt
     print(self.name, evt)
 
+    for [substatus, subcallback] in self.subscriptions:
+      if substatus == status:
+        print("found a sub!")
+        subcallback(evt)
+
     # # eater = False
     # # used to be a 'whitelist' of routers here, ex. 177 and 178 were whitelisted
     # if status == constants.STATUS_CH2:
@@ -55,6 +62,9 @@ class Resolume(Router):
     #   # encoders.handle_push_touches(evt)
     #   encodercontroller.check_for_category_change(evt)
     #   return
+
+  def subscribe(self, status, callback):
+    self.subscriptions.append([status, callback])
 
     # let's just send everything else through for now
     # outpututils.thru(evt)
