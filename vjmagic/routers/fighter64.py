@@ -34,6 +34,10 @@ class Fighter64(Router):
   def use(self, rezzie):
     self.rezzie = rezzie
 
+  def thru(evt):
+    print("thru called.", flush=True)
+    self.rezzie.thru(evt)
+
   # this handler's probably in every router
   def handler(self, event, data=None):
     evt = event[0]
@@ -43,7 +47,12 @@ class Fighter64(Router):
     if status == constants.MIDI_NOTE_ON3:
       hardware.handle_button_press(data1)
     elif status == 130:
-      hardware.handle_button_release(data1)
+      should_activate = hardware.handle_button_release(data1)
+      # maybe close out
+      if should_activate >= 0:
+        print("closing out..", flush=True)
+        self.rezzie.thru([146, should_activate, 127])
+        # self.rezzie.thru([130, 67, 127])
 
     # forward everything to resolume
     self.rezzie.thru(evt)

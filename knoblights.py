@@ -12,6 +12,10 @@ from vjmagic.routers import launchpadmini
 from vjmagic.state import hardware
 from vjmagic.config.midifighter import config
 
+
+# always flush stdout
+# http://stackoverflow.com/questions/230751/how-to-flush-output-of-python-print
+
 from vjmagic.routers.resolume import Resolume
 twister.init()
 resolume = Resolume()

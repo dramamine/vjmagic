@@ -69,5 +69,5 @@ class Resolume(Router):
     # let's just send everything else through for now
     # outpututils.thru(evt)
   def thru(self, event):
-    print("fwding this:", event)
+    print("fwding this:", event, flush=True)
     self.midithru.send_message(event)
