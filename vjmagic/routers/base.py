@@ -12,9 +12,12 @@ class Router:
     print("you should overwrite the handler for this:", self.name)
 
   @staticmethod
-  def find_port_index(midi, str):
+  def find_port_index(midi, str, skip=False):
     for idx, device in enumerate(midi.get_ports()):
       if str in device.lower():
-        return idx
+        if skip:
+          print("skipped one.")
+          skip = False
+        else:
+          return idx
     return -1
-

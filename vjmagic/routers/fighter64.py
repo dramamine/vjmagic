@@ -14,7 +14,7 @@ class Fighter64(Router):
     Router.__init__(self, "Midi Fighter 64")
     # setup inputs
     midiinput = rtmidi.MidiIn()
-    port = self.find_port_index(midiinput, "midi fighter 64")
+    port = self.find_port_index(midiinput, "midi fighter 64", True)
     midiinput.open_port(port)
     midiinput.set_callback(self.handler)
     # for idx, val in enumerate(midiinput.get_ports()):
