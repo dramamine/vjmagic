@@ -22,17 +22,17 @@ active_clip_color = 122
 mask_color_idx = 4
 
 # constructor
-def init(reverse=False):
+def init(skip=False):
   global midiinput, midithru
   # setup inputs
   midiinput = rtmidi.MidiIn()
-  port = Router.find_port_index(midiinput, "midi fighter 64", False)
+  port = Router.find_port_index(midiinput, "midi fighter 64", skip)
   midiinput.open_port(port)
   midiinput.set_callback(handler)
 
   # vport = "python out"
   midithru = rtmidi.MidiOut()
-  portid = Router.find_port_index(midithru, "midi fighter 64", False)
+  portid = Router.find_port_index(midithru, "midi fighter 64", skip)
   if portid >= 0:
     midithru.open_port(portid) 
     print("found out port for mf64-white.")
@@ -90,7 +90,7 @@ def handler(event, data=None):
   global active_mask
   evt = event[0]
   (status, data1, data2) = evt
-  print("midi fighter 64 second:", evt)
+  print("midi fighter 64 white:", evt)
 
   # try changing the color of this guy
 
