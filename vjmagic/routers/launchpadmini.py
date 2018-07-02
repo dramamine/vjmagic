@@ -41,7 +41,7 @@ def init(skip=False):
     # midithru.open_virtual_port(vport)
 
   # initialize_lights()
-  # # turn_on_light(3)
+  cycle_colors()
 
 def use(res):
   global rezzie
@@ -76,6 +76,7 @@ def rezzie_message(evt):
     midithru.send_message([status, data1, active_clip_color])
     if is_clip:
       active_clip = data1
+      print("set active clip:", active_clip, flush=True)
     elif is_mask:
       active_mask = data1
   # this will give you weird behavior. random colors.

@@ -41,7 +41,7 @@ def handle_button_release(button):
       # this is the 'kill button'
       return 67 
     return clips_pressed[len(clips_pressed)-1]
-  return False
+  return -1
 
 
 

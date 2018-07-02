@@ -62,5 +62,45 @@ config = {
     0, 63, 0, 63,
     0, 0, 0, 0,
     0, 0, 0, 0
+  ],
+  'quadrants': [
+    {
+      # blue layer
+      'off_color': 114,
+      'on_color': 69,
+      'buttons': [36, 37, 40, 41]
+    },
+    {
+      # orange layer
+      'off_color': 126,
+      'on_color': 84,
+      'buttons': [39, 43, 47,
+        68, 69, 70, 71,
+        72, 73, 74, 75,
+        76, 77, 78, 79
+      ]
+    },
+    {
+      # purple layer
+      'off_color': 82,
+      'on_color': 94,
+      'buttons': [
+        52, 53,
+        56, 57,
+        60, 61,
+        64, 65
+      ]
+    },
+    {
+      # green layer
+      'off_color': 85,
+      'on_color': 87,
+      'buttons': [
+        84, 85, 86, 87,
+        88, 89, 90, 91,
+        92, 93, 94, 95,
+        96, 97
+      ]
+    }
   ]
 }
