@@ -3,14 +3,16 @@ from vjmagic.routers import twister
 
 buttons_pressed = []
 button_whitelist = [
-  39, 43, 47,
+  39, 43, 47, 51,
   68, 69, 70, 71,
   72, 73, 74, 75,
-  76, 77, 78, 79
+  76, 77, 78, 79,
+  80, 81, 82, 83
 ]
 
 clips_pressed = []
 clips_whitelist = [
+  48, 49,
   52, 53,
   56, 57,
   60, 61,
@@ -39,7 +41,7 @@ def handle_button_release(button):
     clips_pressed.remove(button)
     if not clips_pressed:
       # this is the 'kill button'
-      return 67 
+      return 44
     return clips_pressed[len(clips_pressed)-1]
   return -1
 
