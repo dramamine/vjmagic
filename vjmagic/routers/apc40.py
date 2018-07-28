@@ -12,6 +12,9 @@ midithru = None
 
 clips_bank = 0
 
+opacities = {}
+opacity_disabled = {}
+
 # constructor
 def init():
     global midiinput, midithru
@@ -49,8 +52,10 @@ def handler(event, data=None):
     (status, data1, data2) = evt
     print("apc40", evt)
 
-    check_for_bank_change(status, data1, data2)
-
+    if check_for_bank_change(status, data1, data2) == False:
+        return
+    if check_for_opacity(status, data1, data2) == False:
+        return
 
     # forward everything to resolume
     rezzie.thru(evt)
@@ -65,8 +70,41 @@ def check_for_bank_change(status, data1, data2):
             print('ok! updating clip bank to:', idx)
             recolor_clips_bank(idx)
             recolor_clips_leds()
-            return 
+            return True 
         idx += 1
+    return True
+
+def check_for_opacity(status, data1, data2):
+    global opacities, opacity_disabled, rezzie
+    # store opacities
+    if (status >= 176 and status <= 184) and data1 == apc40.TRACK_FADER:
+        # track_ids are 0-7
+        track_id = status - 176
+        if track_id in opacity_disabled and opacity_disabled[track_id]:
+            return False
+
+        opacities[track_id] = data2
+    if data1 == apc40.CLIP_STOP:
+        
+        # if the button is pressed, set cc to 0.
+        # if the button is released, use the previous opacity
+        if (status >= 144 and status <= 152):
+            track_id = status - 144
+            opacity_disabled[track_id] = True
+
+            cc = 0
+            rezzie.thru([track_id + 176, apc40.TRACK_FADER, cc])
+
+            return False
+
+        if (status >= 128 and status <= 135):
+            track_id = status - 128
+            opacity_disabled[track_id] = False
+
+            cc = opacities[track_id]
+            rezzie.thru([track_id + 176, apc40.TRACK_FADER, cc])
+
+            return False
 
 def recolor_clips_bank(current_bank):
     print("recoloring bank..", current_bank)
