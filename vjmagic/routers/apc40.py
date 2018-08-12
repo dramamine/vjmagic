@@ -11,6 +11,7 @@ midiinput = None
 midithru = None
 
 clips_bank = 0
+active_clip = 0
 
 opacities = {}
 opacity_disabled = {}
@@ -54,6 +55,8 @@ def handler(event, data=None):
 
     if check_for_bank_change(status, data1, data2) == False:
         return
+    if modify_based_on_bank(status, data1, data2) == False:
+        return
     if check_for_opacity(status, data1, data2) == False:
         return
 
@@ -73,6 +76,30 @@ def check_for_bank_change(status, data1, data2):
             return True 
         idx += 1
     return True
+
+def modify_based_on_bank(status, data1, data2):
+    global active_clip
+    if status != apc40.NOTE_ON_CH1 and status != apc40.NOTE_OFF_CH1:
+        return True
+
+    if data1 not in config['clips_leds']:
+        return True
+
+    # hmm.. just add "channels" for more room?
+    rezzie.thru([status + clips_bank, data1, data2])
+
+    # update apc colors
+    if status == apc40.NOTE_ON_CH1:
+        if data1 != active_clip:
+            print('updating active clip from', active_clip, 'to', data1)
+            recolor_clips_led(active_clip)
+            active_clip = data1
+            print('active clip is:', active_clip, dump=True)
+
+    if status == apc40.NOTE_OFF_CH1:
+        recolor_clips_led(data1, apc40.COLOR_GREEN_ENOUGH)
+    return False
+    
 
 def check_for_opacity(status, data1, data2):
     global opacities, opacity_disabled, rezzie
@@ -127,6 +154,16 @@ def recolor_clips_leds():
     for led in clips_leds:
          midithru.send_message([apc40.NOTE_ON_CH1, led, clip_color])
          clip_color = clip_color + 1
+
+# recolor one LED. data1 is the value of the clip (40 different clip buttons)
+# data should be in 'clips_leds'
+def recolor_clips_led(led, color = 0):
+    if color > 0:
+        clip_color = color
+    else:
+        root_color = config['clips_colors'][clips_bank]
+        clip_color = root_color + config['clips_leds'].index(led)
+    midithru.send_message([apc40.NOTE_ON_CH1, led, clip_color])
 
 
 

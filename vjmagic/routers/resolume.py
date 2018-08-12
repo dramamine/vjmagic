@@ -43,7 +43,7 @@ class Resolume(Router):
   def handler(self, event, data=None):
     evt = event[0]
     (status, data1, data2) = evt
-    print(self.name, evt)
+    # print(self.name, evt)
 
     for [substatus, subcallback] in self.subscriptions:
       if substatus == status:
