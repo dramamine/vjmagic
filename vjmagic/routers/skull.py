@@ -80,15 +80,18 @@ def handler(event, data=None):
     if midiableton:
         midiableton.send_message(evt)
 
-    # forward everything to resolume
-    rezzie.thru([status, data1 + bank_button_offset, data2])
 
     # bank buttons: [144, 60, 127], [144, 61, 127]
     if data1 in [60, 61]:
         handle_bank_buttons(status, data1)
+        return
+
+    # forward everything to resolume
+    updated_data1 = data1 + bank_button_offset if (data1 < 40 and status == apc40.NOTE_ON_CH1 or status == apc40.NOTE_OFF_CH1) else data1
+    print('updating clip:', updated_data1, flush=True)
+    rezzie.thru([status, updated_data1, data2])
 
     if status == apc40.NOTE_ON_CH1 and data2 == 127:
-
         print('pressing clip', flush=True)
         handle_clip_pressed(data1)
     elif status == apc40.NOTE_OFF_CH1 and data2 == 0:
@@ -109,7 +112,7 @@ def handle_bank_buttons(status, data1):
     elif data1 == apc40.BANK_BUTTON_RIGHT:
         bank_button_right = (status == apc40.NOTE_ON_CH1)
 
-    bank_button_offset = (8 * bank_button_left) + (16 * bank_button_right)
+    bank_button_offset = (40 * bank_button_left) + (80 * bank_button_right)
     print('bank_button_offset is now:', bank_button_offset, flush=True)
 
 
@@ -128,21 +131,36 @@ def handle_clip_pressed(clipid):
             print('pressing a clip:', layer, col, flush=True)
             rezzie.thru([apc40.FADERS_CH1+layer, 7, 0]) # set opacity to 0%
             rezzie.thru([apc40.FADERS_CH1, 48+layer, 48]) # set speed to 4x
-            rezzie.thru([apc40.NOTE_ON_CH1+layer, 66, 1]) # set direction to right
+            rezzie.thru([apc40.NOTE_ON_CH2+layer, 66, 1]) # set direction to right
         elif col == 2:
             rezzie.thru([apc40.FADERS_CH1+layer, 7, 63]) # set opacity to 50%
-            rezzie.thru([apc40.NOTE_ON_CH1+layer, 49, 127]) # set direction to pause
+            rezzie.thru([apc40.NOTE_ON_CH2+layer, 49, 127]) # set layer opacity direction to pause
             rezzie.thru([apc40.FADERS_CH9+layer, 7, 127]) # set effect opacity to 100% (6th col. on apc40)
             rezzie.thru([apc40.NOTE_ON_CH9+layer, 49, 127]) # set effect direction to pause (6th col. on apc40)
         elif col >= 3:
             rezzie.thru([apc40.FADERS_CH1+layer, 7, 63]) # set opacity to 100%
-            rezzie.thru([apc40.NOTE_ON_CH1+layer, 49, 127]) # set direction to pause
-    elif bank_button_offset == 1:
+            rezzie.thru([apc40.NOTE_ON_CH2+layer, 49, 127]) # set direction to pause
+    elif bank_button_offset == 40:
         if col == 0:
             rezzie.thru([apc40.FADERS_CH1+layer, 7, 127]) # set opacity to 100%
-        if col == 1:
+            rezzie.thru([apc40.NOTE_ON_CH2+layer, 66, 1]) # set layer opacity direction to right
+        elif col in [1, 6]:
             rezzie.thru([apc40.FADERS_CH1+layer, 7, 63]) # set opacity to 50%
-
+            rezzie.thru([apc40.NOTE_ON_CH2+layer, 49, 127]) # set layer opacity direction to pause
+        elif col == 2:
+            rezzie.thru([apc40.FADERS_CH1+layer, 7, 63]) # set opacity to 50%
+            rezzie.thru([apc40.NOTE_ON_CH2+layer, 49, 127]) # set layer opacity direction to pause
+            rezzie.thru([apc40.FADERS_CH9+layer, 7, 127]) # set effect opacity to 100% (6th col. on apc40)
+            rezzie.thru([apc40.NOTE_ON_CH9+layer, 49, 127]) # set effect direction to pause (6th col. on apc40)
+        elif col == 5:
+            rezzie.thru([apc40.FADERS_CH1+layer, 7, 127]) # set opacity to 100%
+            rezzie.thru([apc40.NOTE_ON_CH2+layer, 49, 127]) # set layer opacity direction to pause
+        else:
+            print('col 1 pauser?', flush=True)
+            rezzie.thru([apc40.FADERS_CH1+layer, 7, 127]) # set opacity to 100%
+            rezzie.thru([apc40.NOTE_ON_CH2+layer, 49, 127]) # set layer opacity direction to pause
+        
+            
 def handle_clip_released(clipid):
     layer = floor(clipid / 8)
     col = clipid % 8
@@ -156,21 +174,22 @@ def handle_clip_released(clipid):
             print('releasing a clip:', flush=True)
             rezzie.thru([apc40.FADERS_CH1+layer, 7, 63]) # set opacity to 50%
             rezzie.thru([apc40.FADERS_CH1, 48+layer, 48]) # set speed to 4x
-            rezzie.thru([apc40.NOTE_ON_CH1+layer, 50, 127]) # set direction to left
+            rezzie.thru([apc40.NOTE_ON_CH2+layer, 50, 127]) # set direction to left
         elif col == 1:
             rezzie.thru([apc40.FADERS_CH1+layer, 7, 127]) # set opacity to 100%
             rezzie.thru([apc40.FADERS_CH1, 48+layer, 48]) # set speed to 4x
-            rezzie.thru([apc40.NOTE_ON_CH1+layer, 50, 127]) # set direction to left
+            rezzie.thru([apc40.NOTE_ON_CH2+layer, 50, 127]) # set direction to left
         elif col == 2:
             rezzie.thru([apc40.NOTE_ON_CH9+layer, 50, 127]) # set effect direction to left (6th col. on apc40)
         elif col >= 3:
-            rezzie.thru([apc40.NOTE_ON_CH1+layer, 49, 127]) # set direction to pause
-    elif bank_button_offset == 1:
+            rezzie.thru([apc40.NOTE_ON_CH2+layer, 49, 127]) # set direction to pause
+    elif bank_button_offset == 40:
         if col == 0:
+            rezzie.thru([apc40.NOTE_ON_CH9+layer, 50, 127]) # set effect direction to left (6th col. on apc40)
+        elif col in [1, 5, 6]:
             rezzie.thru([apc40.FADERS_CH1+layer, 7, 0]) # set opacity to 0%
-        if col == 1:
-            rezzie.thru([apc40.FADERS_CH1+layer, 7, 0]) # set opacity to 0%
-
+        elif col == 2:
+            rezzie.thru([apc40.NOTE_ON_CH9+layer, 50, 127]) # set effect direction to left (6th col. on apc40)
 
     # recolor the clip
     recolor_clip_led(clipid)
