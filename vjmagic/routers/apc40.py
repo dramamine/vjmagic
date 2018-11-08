@@ -61,14 +61,17 @@ def handler(event, data=None):
     print("apc40", evt)
 
     if check_for_layer_change(status, data1, data2) == True:
+        print('changed layer')
         return
 
     if check_crossfader(status, data1, data2) == True:
+        print('crossfaded')
         return
 
     # if check_for_bank_change(status, data1, data2) == False:
     #     return
     if modify_based_on_bank(status, data1, data2) == True:
+        print('modified based on bank')
         return
     # if check_for_opacity(status, data1, data2) == False:
     #     return
@@ -80,7 +83,7 @@ def handler(event, data=None):
 # then we use that to change which layer is touched by our main buttons
 def check_for_layer_change(status, data1, data2):
     global clip_layer_selected, effects_layer_selected
-    if data1 != 16:
+    if data1 != apc40.CLIP_STOP:
         return False
     clips_layers = config['clips_layers']
     effects_layers = config['effects_layers']
@@ -129,7 +132,6 @@ def modify_based_on_bank(status, data1, data2):
     global active_clip, active_clip_by_layer
     if status != apc40.NOTE_ON_CH1 and status != apc40.NOTE_OFF_CH1:
         return False
-
     if data1 in config['clips_leds']:
         # just add "channels" for more room
         rezzie.thru([status + clip_layer_selected, data1, data2])

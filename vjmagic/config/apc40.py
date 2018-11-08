@@ -36,9 +36,9 @@ config = {
 	],
 
 	'clips_layers': [
-		apc40.SELECTOR_1, apc40.SELECTOR_2, apc40.SELECTOR_3, apc40.SELECTOR_4
+		apc40.NOTE_ON_CH1, apc40.NOTE_ON_CH2, apc40.NOTE_ON_CH3, apc40.NOTE_ON_CH4
 	],
 	'effects_layers': [
-	   apc40.SELECTOR_5, apc40.SELECTOR_6, apc40.SELECTOR_7, apc40.SELECTOR_8
+	   apc40.NOTE_ON_CH5, apc40.NOTE_ON_CH6, apc40.NOTE_ON_CH7, apc40.NOTE_ON_CH8
 	]
 }
