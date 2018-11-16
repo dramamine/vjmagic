@@ -79,10 +79,10 @@ def handler(event, data=None):
     # forward everything to resolume
     rezzie.thru(evt)
 
-# if a user presses the layer selector buttons (none, 8 bars => 1/16)
+# if a user presses the layer selector buttons
 # then we use that to change which layer is touched by our main buttons
 def check_for_layer_change(status, data1, data2):
-    global clip_layer_selected, effects_layer_selected
+    global clip_layer_selected, effects_layer_selected, active_clip_by_layer
     if data1 != apc40.CLIP_STOP:
         return False
     clips_layers = config['clips_layers']
@@ -90,8 +90,11 @@ def check_for_layer_change(status, data1, data2):
     idx = 0
     for note in clips_layers:
         if status == note:
-            print('updating clip!')
             clip_layer_selected = idx
+            clip = active_clip_by_layer[idx]
+            if clip >= 0:
+                rezzie.thru([apc40.NOTE_ON_CH1 + clip_layer_selected, clip, 127])
+                set_active(clip_layer_selected, clip)
             recolor_clips_leds(idx)
             return True
         idx = idx + 1
@@ -99,6 +102,10 @@ def check_for_layer_change(status, data1, data2):
     for note in effects_layers:
         if status == note:
             effects_layer_selected = idx
+            clip = active_clip_by_layer[idx]
+            if clip >= 0:
+                rezzie.thru([apc40.NOTE_ON_CH1 + clip_layer_selected, clip, 127])
+                set_active(clip_layer_selected, clip)            
             recolor_effects_leds(idx)
             return True
         idx = idx + 1
@@ -211,6 +218,7 @@ def set_active(layer, note):
     recolor_clips_led(active_clip_by_layer[layer], layer_color)
     recolor_clips_led(note, apc40.COLOR_GREEN_ENOUGH)
 
+    print("setting active clip by layer x to y:", layer, note);
     active_clip_by_layer[layer] = note
 
 
@@ -229,7 +237,8 @@ def recolor_effects_leds(layer):
     effects_colors = config['effects_colors']
     color = effects_colors[layer-4]
     for led in effects_leds:
-         midithru.send_message([apc40.NOTE_ON_CH1, led, color])
+        if led != active_clip_by_layer[layer]:
+            midithru.send_message([apc40.NOTE_ON_CH1, led, color])
 
 # recolor one LED. data1 is the value of the clip (40 different clip buttons)
 # data should be in 'clips_leds'
