@@ -13,6 +13,9 @@ midithru = None
 clips_bank = 0
 active_clip = 0
 
+# is the user holding SHIFT
+shift_on = False
+
 opacities = {}
 opacity_disabled = {}
 
@@ -76,18 +79,27 @@ def handler(event, data=None):
     # if check_for_opacity(status, data1, data2) == False:
     #     return
 
+    if check_shift(status, data1, data2) == True:
+        return
+
     # forward everything to resolume
     rezzie.thru(evt)
 
 # if a user presses the layer selector buttons
 # then we use that to change which layer is touched by our main buttons
 def check_for_layer_change(status, data1, data2):
-    global clip_layer_selected, effects_layer_selected, active_clip_by_layer
+    global clip_layer_selected, effects_layer_selected, active_clip_by_layer, shift_on
     if data1 != apc40.CLIP_STOP:
         return False
     clips_layers = config['clips_layers']
     effects_layers = config['effects_layers']
     idx = 0
+
+    if shift_on:
+        rezzie.thru([status+8, data1, data2])
+        prinft('modified!!!!!', flush=True)
+        return True
+
     for note in clips_layers:
         if status == note:
             clip_layer_selected = idx
@@ -110,20 +122,6 @@ def check_for_layer_change(status, data1, data2):
             return True
         idx = idx + 1
 
-# def check_for_bank_change(status, data1, data2):
-#     global clips_bank
-#     clips_banks = config['clips_banks']
-#     idx = 0
-#     for bank in clips_banks:
-#         if status == bank[0] and data1 == bank[1]:
-#             clips_bank = idx
-#             print('ok! updating clip bank to:', idx)
-#             recolor_clips_bank(idx)
-#             recolor_clips_leds()
-#             return True 
-#         idx += 1
-#     return True
-
 def check_crossfader(status, data1, data2):
     if data1 == apc40.CROSSFADER:
         if data2 != 1:
@@ -134,6 +132,16 @@ def check_crossfader(status, data1, data2):
         rezzie.thru([status, data1, 127])    
         return True
     return False
+
+def check_shift(status, data1, data2):
+    global shift_on
+    if data1 == apc40.SHIFT and data2 == 127:
+        if status == apc40.NOTE_ON_CH1:
+            shift_on = True
+        elif status == apc40.NOTE_OFF_CH1:
+            shift_on = False
+        print('shifted', flush=True)
+        return True
 
 def modify_based_on_bank(status, data1, data2):
     global active_clip, active_clip_by_layer
@@ -150,64 +158,10 @@ def modify_based_on_bank(status, data1, data2):
     else:
         return False
 
-    # # update apc colors
-    # if status == apc40.NOTE_ON_CH1:
-    #     if data1 in config['clips_leds'] and data1 != active_clip:
-    #         print('updating active clip from', active_clip, 'to', data1)
-    #         recolor_clips_led(active_clip)
-    #         active_clip = data1
-    #         print('active clip is:', active_clip, dump=True)
-
     if status == apc40.NOTE_OFF_CH1:
         recolor_clips_led(data1, apc40.COLOR_GREEN_ENOUGH)
     return True
     
-
-# def check_for_opacity(status, data1, data2):
-#     global opacities, opacity_disabled, rezzie
-#     # store opacities
-#     if (status >= 176 and status <= 184) and data1 == apc40.TRACK_FADER:
-#         # track_ids are 0-7
-#         track_id = status - 176
-#         if track_id in opacity_disabled and opacity_disabled[track_id]:
-#             return False
-
-#         opacities[track_id] = data2
-#     if data1 == apc40.CLIP_STOP:
-        
-#         # if the button is pressed, set cc to 0.
-#         # if the button is released, use the previous opacity
-#         if (status >= 144 and status <= 152):
-#             track_id = status - 144
-#             opacity_disabled[track_id] = True
-
-#             cc = 0
-#             rezzie.thru([track_id + 176, apc40.TRACK_FADER, cc])
-
-#             return False
-
-#         if (status >= 128 and status <= 135):
-#             track_id = status - 128
-#             opacity_disabled[track_id] = False
-
-#             cc = opacities[track_id]
-#             rezzie.thru([track_id + 176, apc40.TRACK_FADER, cc])
-
-#             return False
-
-# def recolor_clips_bank(current_bank):
-#     print("recoloring bank..", current_bank)
-    # clips_banks = config['clips_banks']
-    # clips_banks_off = config['clips_banks_off']
-
-    idx = 0
-    for message in clips_banks:
-        if idx == current_bank:
-            midithru.send_message(message)
-        else:
-            midithru.send_message(clips_banks_off[idx])
-        idx += 1
-
 def set_active(layer, note):
     global active_clip_by_layer
     if layer < 4:
@@ -249,8 +203,7 @@ def recolor_clips_led(led, color = 0):
     if color > 0:
         clip_color = color
     else:
-        root_color = config['clips_colors'][clips_bank]
-        clip_color = root_color + config['clips_leds'].index(led)
+        clip_color = config['clips_leds'].index(led)
     midithru.send_message([apc40.NOTE_ON_CH1, led, clip_color])
 
 
