@@ -6,9 +6,6 @@ def flatten(iterable):
     # flat lists... thx stackoverflow
     return [item for sublist in iterable for item in sublist]
 
-
-
-
 stick = blinkstick.find_first()
 led_count = 32
 
@@ -22,13 +19,12 @@ for i in range(0, led_count):
         color_stack.append([100, 0, 0])
 
 def convertValueToColor(value):
-    reds = min( round(value/2), 255)
+    reds = max(0, min( round(value/2), 255))
     greens = 255 - reds
     print(value, greens, reds)
     return [greens, reds, 0]
 
 def cb(val):
-    # print('cb called with value:', val)
     color_stack.appendleft( convertValueToColor(val) )
     led_data = flatten(color_stack)
     stick.set_led_data(0, led_data[0:96])

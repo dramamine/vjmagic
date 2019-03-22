@@ -1,19 +1,45 @@
-import serial
+import aioserial
+import asyncio
 
-import serial.tools.list_ports
-print([comport.device for comport in serial.tools.list_ports.comports()])
+# find port name
+# import serial.tools.list_ports
+# print([comport.device for comport in serial.tools.list_ports.comports()])
+listener = None
+ears = True
+last_values = [99, 100, 101, 102, 103]
 
-# ser = serial.Serial('COM3')  # open serial port
-# print(ser.name)         # check which port was really used
-# ser.write(b'hello')     # write a string
-# ser.close()             # close port
-
-ser = serial.Serial('COM3', 9600, timeout=1)
-
-def sense_things(cb):
+async def get_values(aioserial_instance: aioserial.AioSerial):
+    global last_values
     while True:
-        line = ser.readline().rstrip()
-        value = [int(word) for word in line.split() if word.isdigit()]
-        if value:
-            cb(value[0])
-        # print(type(line))
+        if ears:
+
+            text = (await aioserial_instance.readline_async()).decode(errors='ignore')
+            try:
+                val = int(text)
+            except:
+                val = 0
+            # print('my val:', val)
+            if val > 0:
+                last_values.append(val)
+                last_values = last_values[1:]
+
+                last_values.copy().sort()
+                if listener:
+                    listener(last_values[2])
+
+
+
+
+# are we listening for this stuff, or not?
+def toggle_ears(boole):
+    global ears
+    ears = boole
+
+# attach listener to the serial data
+def sense_things(cb):
+    global listener
+    listener = cb
+    run()
+
+def run():
+    asyncio.run(get_values(aioserial.AioSerial(port='COM3')))
