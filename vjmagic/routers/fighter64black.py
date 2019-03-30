@@ -16,14 +16,14 @@ def init(skip = True):
     midiinput = rtmidi.MidiIn()
     port = Router.find_port_index(midiinput, "midi fighter 64", skip)
     if port == -1:
-      print('couldnt find an 8x8 button grid! is it plugged in??')
+      print('couldnt find black (right) 8x8 fighter! is it plugged in??')
       exit(-1)    
     midiinput.open_port(port)
     midiinput.set_callback(handler)
     midithru = rtmidi.MidiOut()
     portid = Router.find_port_index(midithru, "midi fighter 64", skip)
     if port == -1:
-      print('couldnt find the second 8x8 button grid! is it plugged in??')
+      print('couldnt find black (right) 8x8 fighter thru port! is it plugged in??')
       exit(-1)    
     if portid >= 0:
       midithru.open_port(portid) 
@@ -54,7 +54,7 @@ def handler(event, data=None):
         hardware.handle_button_press(data1)
     elif status == 130:
         should_activate = hardware.handle_button_release(data1)
-        # maybe close out
+        # maybe close out the layer
         if should_activate >= 0:
           print("closing out..", should_activate, flush=True)
           rezzie.thru([146, should_activate, 127])

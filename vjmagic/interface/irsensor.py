@@ -5,7 +5,7 @@ import asyncio
 # import serial.tools.list_ports
 # print([comport.device for comport in serial.tools.list_ports.comports()])
 listener = None
-ears = True
+ears = False
 last_values = [99, 100, 101, 102, 103]
 
 async def get_values(aioserial_instance: aioserial.AioSerial):

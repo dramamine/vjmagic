@@ -1,7 +1,9 @@
-from vjmagic.routers import fighter64
 from vjmagic.routers import twister
+from vjmagic.interface import thereminmanager
 
 buttons_pressed = []
+# these are the buttons that inform twister or LED to do something;
+# using this for SUPERKNOB / RAINBOW KNOB right now
 button_whitelist = [
   39, 43, 47, 51,
   68, 69, 70, 71,
@@ -25,7 +27,9 @@ def load_config(mycfg):
 
 def handle_button_press(button):
   if (button in button_whitelist):
+    print('twister effect press')
     twister.handle_effect_press(not buttons_pressed)
+    thereminmanager.press()
     buttons_pressed.append(button)
 
   if (button in clips_whitelist):
@@ -36,7 +40,10 @@ def handle_button_release(button):
   if (button in button_whitelist):
     buttons_pressed.remove(button)
     if not buttons_pressed:
+      print('twister effect release')
       twister.handle_effect_release()
+      thereminmanager.release()
+
   if (button in clips_whitelist):
     clips_pressed.remove(button)
     if not clips_pressed:

@@ -1,6 +1,6 @@
 from blinkstick import blinkstick
 from collections import deque
-import irsensor
+# import irsensor
 
 def flatten(iterable):
     # flat lists... thx stackoverflow
@@ -21,7 +21,7 @@ for i in range(0, led_count):
 def convertValueToColor(value):
     reds = max(0, min( round(value/2), 255))
     greens = 255 - reds
-    print(value, greens, reds)
+    # print(value, greens, reds)
     return [greens, reds, 0]
 
 def cb(val):
@@ -29,4 +29,9 @@ def cb(val):
     led_data = flatten(color_stack)
     stick.set_led_data(0, led_data[0:96])
 
-irsensor.sense_things(cb)
+def blackout():
+    # print('blackin out')
+    stick.set_led_data(0, [0] * 96)
+
+# if __name__ == "__main__":
+#     irsensor.sense_things(cb)

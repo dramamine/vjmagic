@@ -7,8 +7,9 @@ import sys, os
 # from vjmagic.routers.pushrouter import PushRouter
 # from vjmagic.routers.resolumerouter import ResolumeRouter
 from vjmagic.routers import twister
-from vjmagic.routers import fighter64
-from vjmagic.routers import launchpadmini
+from vjmagic.routers import fighter64black
+from vjmagic.routers import fighter64white
+from vjmagic.interface import thereminmanager
 from vjmagic.state import hardware
 from vjmagic.config.midifighter import config
 
@@ -17,13 +18,19 @@ from vjmagic.config.midifighter import config
 # http://stackoverflow.com/questions/230751/how-to-flush-output-of-python-print
 
 from vjmagic.routers.resolume import Resolume
-twister.init()
 resolume = Resolume()
-fighter64.init()
-launchpadmini.init()
+
+twister.init()
 twister.use(resolume)
-fighter64.use(resolume)
-launchpadmini.use(resolume)
+
+fighter64black.init()
+fighter64black.use(resolume)
+
+fighter64white.init()
+fighter64white.use(resolume)
+
+# new style
+thereminmanager.init(resolume)
 
 if __name__ == '__main__':
   try:

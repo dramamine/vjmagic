@@ -7,7 +7,7 @@ import sys, os
 # from vjmagic.routers.pushrouter import PushRouter
 # from vjmagic.routers.resolumerouter import ResolumeRouter
 from vjmagic.routers import twister
-from vjmagic.routers.fighter64 import Fighter64
+from vjmagic.routers.fighter64black import Fighter64
 from vjmagic.state import hardware
 from vjmagic.config.midifighter import config
 
