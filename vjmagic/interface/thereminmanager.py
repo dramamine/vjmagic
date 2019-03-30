@@ -5,6 +5,13 @@ rezzie = None
 # is this thing on?
 on = False
 
+# use these to adjust the arduino range
+# NOTE: update this in ledstrip too
+arduino_min = 250
+arduino_max = 700
+multiplier = (arduino_max - arduino_min) / 128
+
+# store last resolume value - don't send if it's not an update
 last_res_value = 0
 
 def init(res):
@@ -16,14 +23,13 @@ def init(res):
 def handle_ir_value(value):
     global on, last_res_value
     if not on:
-        # print('leaving early')
         return
     # tell ledstrip what we got
     ledstrip.cb(value)
 
-    # convert value (100-600ish?? subject to change)
+    # convert value (250-600ish?? subject to change)
     # to the 0-127 range.
-    converted = max(0, min(round(value/4), 127))
+    converted = max(0, min(round((value-arduino_min)/multiplier), 127))
     
     if converted == last_res_value:
         return

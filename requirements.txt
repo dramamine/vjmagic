@@ -1,5 +1,5 @@
 BlinkStick==1.1.8
-numpy==1.11.3
+numpy==1.14.5
 pip-save==0.2.0
 PyAudio==0.2.9
 python-rtmidi==1.2.1

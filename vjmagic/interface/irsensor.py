@@ -4,16 +4,19 @@ import asyncio
 # find port name
 # import serial.tools.list_ports
 # print([comport.device for comport in serial.tools.list_ports.comports()])
+
+# callback for values
 listener = None
+
+# if True, call the callback/listener when getting values
 ears = False
 last_values = [99, 100, 101, 102, 103]
 
 async def get_values(aioserial_instance: aioserial.AioSerial):
     global last_values
     while True:
+        text = (await aioserial_instance.readline_async()).decode(errors='ignore')
         if ears:
-
-            text = (await aioserial_instance.readline_async()).decode(errors='ignore')
             try:
                 val = int(text)
             except:
@@ -23,11 +26,9 @@ async def get_values(aioserial_instance: aioserial.AioSerial):
                 last_values.append(val)
                 last_values = last_values[1:]
 
-                last_values.copy().sort()
+                sorted_values = sorted(last_values)
                 if listener:
-                    listener(last_values[2])
-
-
+                    listener(sorted_values[2])
 
 
 # are we listening for this stuff, or not?

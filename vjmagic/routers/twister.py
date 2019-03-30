@@ -12,6 +12,8 @@ rezzie = None
 midiinput = None
 midithru = None
 
+on = False
+
 color_offsets = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1, 0, 
   -1, -2, -3, -4, -5, -6, -7, -8, -9, -10, -9, -8, -7, -6, -5, -4, -3, -2, -1]
 
@@ -19,7 +21,7 @@ press_count = 0
 
 # constructor
 def init():
-  global midiinput, midithru
+  global midiinput, midithru, on
   # setup inputs
   midiinput = rtmidi.MidiIn()
   port = Router.find_port_index(midiinput, "twister")
@@ -39,7 +41,7 @@ def init():
       print("found out port.")
   else:
       midithru.open_virtual_port(vport)
-
+  on = True
   initialize_lights()
   # turn_on_light(3)
 
@@ -126,6 +128,8 @@ def handler(event, data=None):
 
 
 def turn_on_light(encoder):
+  if not on:
+    return
   print("turning a light on")
   # sets rgbs to ON
   midithru.send_message([constants.FIGHTER_ENCODER_SWITCHES, encoder, 127])    
@@ -147,6 +151,8 @@ def turn_on_light(encoder):
   # midithru.send_message([constants.FIGHTER_ENCODER_ANIMATIONS, 1, 95])
 
 def turn_off_light(encoder):
+  if not on:
+    return
   print("turning off ", encoder)
   # midithru.send_message([constants.FIGHTER_ENCODER_SWITCHES, encoder, 64]) 
   # midithru.send_message([constants.FIGHTER_ENCODER_SWITCHES, encoder, 65])
@@ -168,9 +174,13 @@ def turn_off_light(encoder):
 
 
 def set_off_color(encoder, color):
+  if not on:
+    return
   midithru.send_message([constants.FIGHTER_ENCODER_SWITCHES, encoder, color])
 
 def set_animation(encoder, animation):
+  if not on:
+    return
   midithru.send_message([constants.FIGHTER_ENCODER_ANIMATIONS, encoder, animation])
 
 
