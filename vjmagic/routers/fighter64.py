@@ -15,10 +15,16 @@ def init(skip = True):
     # setup inputs
     midiinput = rtmidi.MidiIn()
     port = Router.find_port_index(midiinput, "midi fighter 64", skip)
+    if port == -1:
+      print('couldnt find an 8x8 button grid! is it plugged in??')
+      exit(-1)    
     midiinput.open_port(port)
     midiinput.set_callback(handler)
     midithru = rtmidi.MidiOut()
     portid = Router.find_port_index(midithru, "midi fighter 64", skip)
+    if port == -1:
+      print('couldnt find the second 8x8 button grid! is it plugged in??')
+      exit(-1)    
     if portid >= 0:
       midithru.open_port(portid) 
       print("found out port for mf64-black.")

@@ -23,6 +23,11 @@ def init():
   # setup inputs
   midiinput = rtmidi.MidiIn()
   port = Router.find_port_index(midiinput, "twister")
+  if port == -1:
+    print('couldnt find twister! is it plugged in??')
+    print('ignoring this device for now.')
+    return False
+    
   midiinput.open_port(port)
   midiinput.set_callback(handler)
 
