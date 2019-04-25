@@ -3,8 +3,8 @@ from collections import deque
 # import irsensor
 import numpy as np
 
-arduino_min = 250
-arduino_max = 700
+arduino_min = 60
+arduino_max = 600
 blinkstick_max = 180 # up to 255, but that is very bright.
 multiplier = (arduino_max - arduino_min) / blinkstick_max
 
@@ -16,7 +16,7 @@ def flatten(iterable):
 # single blinkstick
 stick = blinkstick.find_first()
 # number of leds
-led_count = 32
+led_count = 17
 # number of values needed for the whole stick
 stick_length = led_count * 3
 
