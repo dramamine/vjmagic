@@ -42,11 +42,11 @@ ENCODERS = [71, 72, 73, 74, 75, 76, 77, 78, 79]
 
 # those square buttons in the rightmost column.
 # TODO are these being used anymore?
-USER_BUTTONS_ROUTED_TO_CH3 = [
-  110, 111, 112, 113, 114, 115,
-  54, 55, 56, 57, 58, 59, 60, 61, 62, 63,
-  48, 49, 50, 51, 52, 53
-]
+# USER_BUTTONS_ROUTED_TO_CH3 = [
+#   110, 111, 112, 113, 114, 115,
+#   54, 55, 56, 57, 58, 59, 60, 61, 62, 63,
+#   48, 49, 50, 51, 52, 53
+# ]
 
 HYPNO_ALPHA = 20
 HYPNO_BETA = 21

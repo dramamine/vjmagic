@@ -21,6 +21,16 @@ active_clip_color = 122
 
 mask_color_idx = 4
 
+def is_clip(data1):
+  return data1 in range(68, 100) or data1 in [39, 43, 47, 51, 55, 59, 63, 67]
+
+def is_mask(data1):
+  return data1 in [36, 37, 40, 41,  44, 45, 48, 49,
+            52, 53, 56, 57, 60, 61, 64, 65
+            ]
+def is_off_button(data1):
+  return data1 in [38, 42, 46, 50, 54, 58, 62, 66]
+
 # constructor
 def init(skip=False):
   global midiinput, midithru
@@ -57,16 +67,14 @@ def rezzie_message(evt):
   global active_clip, active_mask
   (status, data1, data2) = evt
   print("rezzie msg to mf64-white", evt, flush=True)  
-  is_clip = data1 in range(36,52) or data1 in range(68,84)
-  is_mask = data1 in range(56,68) or data1 in range(88,100) 
 
   if data2 == 32:
     # it's no longer active
     color = 0
-    if is_clip:
+    if is_clip(data1):
       color = clip_colors[clip_color_idx]
       active_clip = -1
-    elif is_mask:
+    elif is_mask(data1):
       color = clip_colors[mask_color_idx]
       active_mask = -1
 
@@ -74,17 +82,11 @@ def rezzie_message(evt):
   elif data2 == 95:
     # it is now active
     midithru.send_message([status, data1, active_clip_color])
-    if is_clip:
+    if is_clip(data1):
       active_clip = data1
       print("set active clip:", active_clip, flush=True)
-    elif is_mask:
+    elif is_mask(data1):
       active_mask = data1
-  # this will give you weird behavior. random colors.
-  # else:
-    # midithru.send_message(evt)
-
-# def initialize_lights():
-#   [turn_off_light(x) for x in range(0, 16)]
 
 
 def handler(event, data=None):
@@ -93,41 +95,18 @@ def handler(event, data=None):
   (status, data1, data2) = evt
   print("midi fighter 64 white:", evt)
 
-  # try changing the color of this guy
-
-
   # should we turn the mask off?
-  # dont forget, ranges are not inclusive
-  is_off_button = data1 in range(52,56) or data1 in range(84,88) 
-  is_clip = data1 in range(36,52) or data1 in range(68,84)
-  is_mask = data1 in range(56,68) or data1 in range(88,100) 
-
-  if (status == constants.MIDI_NOTE_ON6 and (data1 == active_mask or is_off_button) and data2 > 0):
+  if (status == constants.MIDI_NOTE_ON6 and (data1 == active_mask or is_off_button(data1)) and data2 > 0):
     print("updating active mask to -1")
     active_mask = -1
     # 16/cc121, i.e. the 1 button on the mini
-    rezzie.thru([status, 52, 127])
+    rezzie.thru([status, 127, 127])
+    rezzie.thru([status, 127, 0])
     cycle_colors()
     return
 
   # just forwarding everything through for now
   rezzie.thru(evt)
-
-  # if (is_mask and data2 > 0):
-  #   print("setting active_mask to:", data1)
-  #   active_mask = data1
-
-  # if (is_clip and data2 > 0):
-  #   print("seting active clip to:", data1)
-  #   active_clip = data1
-
-  # if status == constants.MIDI_NOTE_ON3:
-  #   resolume.handle_button_press(data1)
-  # if status == 176:
-  #   cc = hardware.get_target_encoder(data1)
-  #   if cc >= 0:
-  #     rezzie.thru([179, cc, data2])
-
 
 def cycle_colors():
   global clip_color_idx, mask_color_idx
@@ -148,11 +127,7 @@ def cycle_colors():
       print("skipping active clip", data1, flush=True)
       continue
 
-    # is_off_button = data1 in range(52,56) or data1 in range(84,88) 
-    is_clip = data1 in range(36,52) or data1 in range(68,84)
-    is_mask = data1 in range(56,68) or data1 in range(88,100)
-
-    if is_clip:
+    if is_clip(data1):
       midithru.send_message([constants.MIDI_NOTE_ON6, data1, clip_color])
-    elif is_mask:
+    elif is_mask(data1):
       midithru.send_message([constants.MIDI_NOTE_ON6, data1, mask_color])

@@ -14,11 +14,11 @@ button_whitelist = [
 
 clips_pressed = []
 clips_whitelist = [
-  48, 49,
-  52, 53,
-  56, 57,
-  60, 61,
-  64, 65
+  48, 49, 50,
+  52, 53, 54,
+  56, 57, 58,
+  60, 61, 62,
+  64, 65, 66
 ]
 
 # @TODO remove

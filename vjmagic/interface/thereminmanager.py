@@ -17,7 +17,11 @@ last_res_value = 0
 def init(res):
     global rezzie
     rezzie = res
-    irsensor.sense_things(handle_ir_value)
+    try:
+        irsensor.sense_things(handle_ir_value)
+    except:
+        return None
+    
 
 # receive value from ir sensor
 def handle_ir_value(value):
@@ -52,4 +56,7 @@ def release():
     global on
     on = False
     irsensor.toggle_ears(False)
-    ledstrip.blackout()
+    try:
+        ledstrip.blackout()
+    except:
+        return None
