@@ -1,5 +1,6 @@
 from vjmagic.routers import twister
 from vjmagic.interface import thereminmanager
+from vjmagic.config.midifighter import config
 
 buttons_pressed = []
 # these are the buttons that inform twister or LED to do something;
@@ -26,7 +27,7 @@ def load_config(mycfg):
   return
 
 def handle_button_press(button):
-  if (button in button_whitelist):
+  if (button in config['quadrants'][1]['buttons']):
     print('twister effect press')
     twister.handle_effect_press(not buttons_pressed)
     thereminmanager.press()
@@ -37,7 +38,7 @@ def handle_button_press(button):
 
 # return "another button that you should press" to fighter64
 def handle_button_release(button):
-  if (button in button_whitelist):
+  if (button in config['quadrants'][1]['buttons']):
     buttons_pressed.remove(button)
     if not buttons_pressed:
       print('twister effect release')

@@ -20,6 +20,7 @@ def init(res):
     try:
         irsensor.sense_things(handle_ir_value)
     except:
+        print("irsensor error")
         return None
     
 
@@ -48,6 +49,7 @@ def press():
     global on
     if on:
         return
+    print("toggling ears")
     irsensor.toggle_ears(True)
     on = True
     
@@ -55,6 +57,7 @@ def press():
 def release():
     global on
     on = False
+    print("toggling ears off")
     irsensor.toggle_ears(False)
     try:
         ledstrip.blackout()
