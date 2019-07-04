@@ -8,7 +8,7 @@ import sys, os
 # from vjmagic.routers.resolumerouter import ResolumeRouter
 from vjmagic.routers import twister
 from vjmagic.routers import fighter64black
-from vjmagic.routers import fighter64white
+from vjmagic.routers import fighter64trl
 from vjmagic.interface import thereminmanager
 from vjmagic.state import hardware
 from vjmagic.config.midifighter import config
@@ -26,8 +26,8 @@ twister.use(resolume)
 fighter64black.init(False)
 fighter64black.use(resolume)
 
-fighter64white.init(True)
-fighter64white.use(resolume)
+fighter64trl.init(True)
+fighter64trl.use(resolume)
 
 # new style
 thereminmanager.init(resolume)

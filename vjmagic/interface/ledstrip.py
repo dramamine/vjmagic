@@ -18,7 +18,7 @@ stick = blinkstick.find_first()
 # number of leds
 led_count = 50
 # number of values needed for the whole stick
-stick_length = led_count * 3
+stick_length = 50
 
 stick_start = 3 * 40
 
@@ -41,8 +41,8 @@ def convertValueToColor(value):
 
 def cb(val):
     color = convertValueToColor(val)
-    led_data = np.tile(color, led_count)
-    stick.set_led_data(stick_start, led_data)
+    led_data = np.tile([0,0,0], stick_length - led_count) + np.tile(color, led_count)
+    stick.set_led_data(0, led_data)
 
 # use a queue to show changes over time
 def cb_chain(val):
