@@ -7,8 +7,8 @@ on = False
 
 # use these to adjust the arduino range
 # NOTE: update this in ledstrip too
-arduino_min = 250
-arduino_max = 700
+arduino_min = 100
+arduino_max = 450
 multiplier = (arduino_max - arduino_min) / 128
 
 # store last resolume value - don't send if it's not an update
@@ -17,11 +17,10 @@ last_res_value = 0
 def init(res):
     global rezzie
     rezzie = res
-    try:
-        irsensor.sense_things(handle_ir_value)
-    except:
-        print("irsensor error")
-        return None
+    irsensor.sense_things(handle_ir_value)
+    # except:
+    #     print("irsensor error")
+    #     return None
     
 
 # receive value from ir sensor

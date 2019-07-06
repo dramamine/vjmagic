@@ -15,12 +15,11 @@ def flatten(iterable):
 
 # single blinkstick
 stick = blinkstick.find_first()
-# number of leds
-led_count = 50
-# number of values needed for the whole stick
-stick_length = 50
 
-stick_start = 3 * 40
+# number of leds to color. these are at the END of the strip (farthest from USB)
+led_count = 8
+# number of values needed for the whole stick
+stick_length = 32
 
 
 # note that you had to update the library to make this code work!
@@ -41,19 +40,20 @@ def convertValueToColor(value):
 
 def cb(val):
     color = convertValueToColor(val)
-    led_data = np.tile([0,0,0], stick_length - led_count) + np.tile(color, led_count)
+    led_data = flatten([[0,0,0]*(stick_length-led_count), np.tile(color, led_count)])
+    print(led_data)
     stick.set_led_data(0, led_data)
 
 # use a queue to show changes over time
 def cb_chain(val):
     color_stack.appendleft( convertValueToColor(val) )
     led_data = flatten(color_stack)
-    stick.set_led_data(stick_start, led_data[0:stick_length])
+    stick.set_led_data(0, led_data[0:stick_length])
 
-to_black = [0] * stick_length
+to_black = [0,0,0] * stick_length
 def blackout():
-    # print('blackin out')
-    stick.set_led_data(stick_start, to_black)
+    print('blackin out')
+    stick.set_led_data(0, to_black)
 
 if __name__ == "__main__":
     import irsensor
